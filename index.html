@@ -1,1349 +1,1381 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>South Shore Lake County – 44 Lots</title>
-<style>
-  :root {
-    --brand:#1e3a8a;
-    --bg:#f3f4f6;
-    --card:#ffffff;
-    --muted:#6b7280;
-    --success:#16a34a;
-    --chip:#e5e7eb;
-  }
-  *{box-sizing:border-box}
-  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;background:var(--bg);color:#111}
-  header{background:var(--brand);color:#fff;padding:18px 16px;text-align:center}
-  header h1{margin:0;font-size:clamp(18px,3.5vw,28px)}
-  .filters{position:sticky;top:0;z-index:10;background:#fff;display:flex;flex-wrap:wrap;justify-content:center;gap:8px;padding:12px 10px;border-bottom:1px solid #e5e7eb}
-  .filter-btn{border:0;background:var(--chip);padding:8px 14px;border-radius:999px;cursor:pointer;font-weight:600}
-  .filter-btn.active,.filter-btn:hover{background:var(--brand);color:#fff}
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;padding:22px;max-width:1200px;margin:0 auto}
-  .card{background:var(--card);border-radius:14px;box-shadow:0 2px 10px rgba(0,0,0,.08);overflow:hidden;display:flex;flex-direction:column}
-  .carousel{position:relative;height:190px;background:#d1d5db}
-  .carousel img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .35s ease}
-  .carousel img.active{opacity:1}
-  .dots{position:absolute;left:0;right:0;bottom:8px;display:flex;justify-content:center;gap:6px}
-  .dots .dot{width:8px;height:8px;border-radius:999px;background:rgba(255,255,255,.6);cursor:pointer}
-  .dots .dot.active{background:#fff}
-  .card-content{padding:14px 14px 16px}
-  .card h3{margin:0 0 6px;font-size:1.05rem}
-  .price{margin:0;color:var(--success);font-weight:700}
-  .tags{margin-top:8px;display:flex;flex-wrap:wrap;gap:6px}
-  .tag{background:var(--chip);padding:3px 8px;border-radius:8px;font-size:.78rem;color:#111}
-  footer{padding:24px;text-align:center;color:var(--muted)}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>South Shore Lake County — Land Lots</title>
+  <style>
+    :root{
+      --bg:#f4f6fb; --card:#fff; --accent:#0b6596; --accent-2:#2b9bd3; --muted:#616a73;
+      --radius:12px; --shadow: 0 12px 34px rgba(12,20,40,0.06);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:#15202b;-webkit-font-smoothing:antialiased}
+    header{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white;padding:28px 18px 34px}
+    header .container{display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap}
+    header h1{margin:0;font-size:20px;line-height:1.1}
+    header p{margin:6px 0 0 0;opacity:0.95;max-width:900px}
+    .container{max-width:1200px;margin:20px auto;padding:0 16px}
+    .controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:10px 0 18px 0}
+    input[type="search"], select{
+      padding:10px 12px;border-radius:10px;border:1px solid #e3eef8;background:white;min-width:220px;outline:0
+    }
+    input[type="search"]:focus, select:focus{box-shadow:0 6px 18px rgba(11,101,150,0.12);border-color:var(--accent)}
+    .btn {background:var(--accent);color:#fff;border:0;padding:10px 12px;border-radius:10px;cursor:pointer;transition:all .16s;display:inline-flex;gap:8px;align-items:center}
+    .btn:hover{transform:translateY(-1px)}
+    .section-title{margin:18px 0 8px 0;font-size:18px;color:#0b3650}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:18px}
+    .card{background:var(--card);border-radius:12px;box-shadow:var(--shadow);display:flex;flex-direction:column;overflow:hidden;transition:transform .18s,box-shadow .18s}
+    .card:hover{transform:translateY(-6px);box-shadow:0 22px 50px rgba(12,20,40,0.09)}
+    .carousel{position:relative;width:100%;height:190px;overflow:hidden;background:#f0f4f8}
+    .carousel img{width:100%;height:190px;object-fit:cover;display:none}
+    .carousel img.active{display:block}
+    .carousel .nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,0.42);border:0;color:white;font-size:18px;padding:6px 10px;border-radius:8px;cursor:pointer}
+    .carousel .prev{left:8px}
+    .carousel .next{right:8px}
+    .price-badge{position:absolute;right:12px;top:12px;background:linear-gradient(180deg,rgba(0,0,0,0.65),rgba(0,0,0,0.5));color:#fff;padding:6px 10px;border-radius:8px;font-weight:700;font-size:14px;box-shadow:0 6px 18px rgba(0,0,0,0.12)}
+    .card-content{padding:14px 16px 12px}
+    .card h3{margin:0 0 6px 0;font-size:16px;color:#0b3b56}
+    .meta{font-size:13px;color:var(--muted);margin-bottom:8px}
+    .facts{font-size:14px;margin-bottom:8px;color:#21313b}
+    .notes{font-size:13px;color:#334;line-height:1.35;margin-bottom:10px}
+    .small{font-size:12px;color:var(--muted)}
+    .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    .actions{margin-top:auto;padding:12px;border-top:1px solid #f0f2f6;display:flex;gap:8px;flex-wrap:wrap}
+    .actions a{flex:1;text-align:center;background:var(--accent);color:#fff;padding:10px 12px;border-radius:8px;font-size:13px;text-decoration:none;display:inline-flex;gap:8px;align-items:center;justify-content:center;transition:all .14s}
+    .actions a:hover{transform:translateY(-3px);background:#094b70}
+    .actions a.secondary{background:#eef6fb;color:var(--accent);border:1px solid #d9eef9}
+    .source{font-size:12px;color:var(--muted);margin-left:auto}
+    .tags{display:flex;gap:8px;flex-wrap:wrap}
+    .tag{background:#f2fbff;color:var(--accent);padding:6px 8px;border-radius:999px;font-size:12px;border:1px solid #e0f3fb}
+    footer{margin:28px 0 60px 0;color:var(--muted);font-size:13px;text-align:center}
+    @media (max-width:900px){
+      .carousel{height:170px}
+      .carousel img{height:170px}
+    }
+    @media (max-width:600px){
+      .controls{flex-direction:column;align-items:stretch}
+      .actions a{flex:1 1 48%}
+    }
+    /* print */
+    @media print {
+      header, .controls, .actions, .carousel .nav {display:none}
+      .grid{grid-template-columns:repeat(2,1fr)}
+    }
+    .icon {width:14px;height:14px;display:inline-block;vertical-align:middle}
+  </style>
 </head>
 <body>
-<header><h1>South Shore Lake County – 54 Lots</h1></header>
-<div class="filters">
-  <button class="filter-btn active" data-filter="all">All Lots</button>
-  <button class="filter-btn" data-filter="budget">Budget ($7K–$15K)</button>
-  <button class="filter-btn" data-filter="mid">Mid-Tier ($16K–$25K)</button>
-  <button class="filter-btn" data-filter="premium">Premium ($26K–$36K)</button>
-  <button class="filter-btn" data-filter="riviera">Kelseyville Riviera</button>
-  <button class="filter-btn" data-filter="heights">Riviera Heights</button>
-  <button class="filter-btn" data-filter="clearlake">Clearlake</button>
-</div>
-<div class="grid">
-
-  <div class="card budget riviera">
-    <div class="carousel">
-      <img src="https://photos.zillowstatic.com/fp/3df0cc21401a707ba22e3c02126ddd25-cc_ft_768.webp" alt="10493 Boren Bega Dr" class="active">
-      <img src="https://photos.zillowstatic.com/fp/7ffbc393cb2efb17bf5d19f862e4c2b6-cc_ft_384.webp" alt="10493 Boren Bega Dr">
-      <img src="https://photos.zillowstatic.com/fp/a5e4086f4a3eb725eab8e76fa1d58346-cc_ft_384.webp" alt="10493 Boren Bega Dr">
-      <img src="https://photos.zillowstatic.com/fp/a5e4086f4a3eb725eab8e76fa1d58346-cc_ft_384.webp" alt="10493 Boren Bega Dr">
-      <img src="https://photos.zillowstatic.com/fp/7f5edac6299f4d430a1986a7e8548a6d-cc_ft_384.webp" alt="10493 Boren Bega Dr">
-      <div class="dots"></div>
-    </div>
-    <div class="card-content">
-      <h3>10100 El Dorado Way, Kelseyville, CA 95451</h3>
-      <p class="price">$7,888</p>
-      <div class="tags">
-        <span class="tag">Kelseyville Riviera</span>
-        <span class="tag">Budget</span>
-        <span class="tag">7,152 sqft</span>
-        <a href="https://wa.me/17864935842?text=I%20am%20interested%20in%2010100%20El%20Dorado%20Way%2C%20Kelseyville%2C%20CA%2095451" 
-   target="_blank" 
-   class="whatsapp-btn">
-  <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" 
-       alt="WhatsApp" 
-       style="width:36px;height:36px;">
-</a>
-
+  <header>
+    <div class="container">
+      <div style="flex:1 1 420px">
+        <h1>South Shore — Lake County Land Lots</h1>
+        <p>The lots around Kelseyville offer sweeping views of Clear Lake and the surrounding mountains. Many parcels are forested with oaks, pines and native shrubs. Low HOA carrying costs in many Riviera neighborhoods (example: $140/year) and no annual water stand-by fee in many cases. Buyers should verify taxes, APNs, perc tests and other facts.</p>
+      </div>
+      <div style="min-width:220px;text-align:right;color:rgba(255,255,255,0.95)">
+        <div style="font-weight:700">Contact</div>
+        <div style="margin-top:6px">WhatsApp: +1 (786) 493-5842</div>
+        <div style="margin-top:6px">Email: m.ahmadreseller@gmail.com</div>
       </div>
     </div>
-  </div>
+  </header>
 
-  <div class="card mid riviera">
-    <div class="carousel">
-      <img src="https://photos.zillowstatic.com/fp/fe8455d7d14726efaca7eb261e1f58f6-cc_ft_768.webp" alt="10634 Boren Bega Dr" class="active">
-      <img src="https://photos.zillowstatic.com/fp/e59312c05aca952198341cb5eeb74a90-cc_ft_384.webp" alt="10634 Boren Bega Dr">
-      <img src="https://photos.zillowstatic.com/fp/5bb3e5693580763b1680a06b5530fc4c-cc_ft_384.webp" alt="10634 Boren Bega Dr">
-      <img src="https://photos.zillowstatic.com/fp/a53ce4c8b4a7f6ee30e4c63de60002d0-cc_ft_768.webp" alt="10634 Boren Bega Dr">
-      <img src="https://photos.zillowstatic.com/fp/f76089131fdb860d807aa85835bc5533-cc_ft_384.webp" alt="10634 Boren Bega Dr">
-      <div class="dots"></div>
+  <main class="container" role="main">
+    <div class="controls" aria-label="controls">
+      <input id="search" type="search" placeholder="Search address, price, APN, notes..." aria-label="Search" />
+      <select id="filterCategory" aria-label="Filter category">
+        <option value="">All categories</option>
+        <option value="Budget">Budget Lots ($7K–$15K)</option>
+        <option value="Other">Other Lots ($15K+)</option>
+      </select>
+      <select id="filterHOA" aria-label="Filter HOA">
+        <option value="">Any HOA</option>
+        <option value="140">$140/yr HOA</option>
+        <option value="160">$160/yr HOA</option>
+        <option value="475+">$475+ HOA</option>
+      </select>
+      <button id="clearBtn" class="btn" aria-label="Reset filters">Reset</button>
     </div>
-    <div class="card-content">
-      <h3>10634 Boren Bega Dr, Kelseyville, CA 95451</h3>
-      <p class="price">$19,888</p>
-      <div class="tags">
-        <span class="tag">Kelseyville Riviera</span>
-        <span class="tag">Mid-Tier</span>
-        <span class="tag">6,969 sqft</span>
-        <a href="https://wa.me/17864935842?text=I%20am%20interested%20in%2010634%20Boren%20Bega%20Dr%2C%20Kelseyville%2C%20CA%2095451" 
-   target="_blank" 
-   class="whatsapp-btn">
-  <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" 
-       alt="WhatsApp" 
-       style="width:36px;height:36px;">
-</a>
-      </div>
-    </div>
-  </div>
 
-  <div class="card budget riviera">
-    <div class="carousel">
-      <img src="https://photos.zillowstatic.com/fp/bfe4f67ad42110d32bbb3f9035e15c80-cc_ft_768.webp" alt="10167 Del Monte Way" class="active">
-      <img src="https://photos.zillowstatic.com/fp/ff2a2e3dc6a11a469c886b51972223be-cc_ft_384.webp" alt="10167 Del Monte Way">
-      <img src="https://photos.zillowstatic.com/fp/ff2a2e3dc6a11a469c886b51972223be-cc_ft_384.webp" alt="10167 Del Monte Way">
-      <img src="https://photos.zillowstatic.com/fp/9dbcd7d827139255faf30e2c7ccc715c-cc_ft_768.webp" alt="10167 Del Monte Way">
-      <img src="https://photos.zillowstatic.com/fp/68548dff5724a235db069a16cf1c39c6-cc_ft_384.webp" alt="10167 Del Monte Way">
+    <h2 class="section-title">Budget Lots ($7K – $15K)</h2>
+    <div id="budgetGrid" class="grid" aria-live="polite"></div>
 
-      <div class="dots"></div>
-    </div>
-    <div class="card-content">
-      <h3>10167 Del Monte Way, Kelseyville, CA 95451</h3>
-      <p class="price">$11,888</p>
-      <div class="tags">
-        <span class="tag">Kelseyville Riviera</span>
-        <span class="tag">Budget</span>
-        <span class="tag">8,637 sqft</span>
-        <a href="https://wa.me/17864935842?text=I%20am%20interested%20in%2010167%20Del%20Monte%20Way%2C%20Kelseyville%2C%20CA%2095451" 
-   target="_blank" 
-   class="whatsapp-btn">
-  <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" 
-       alt="WhatsApp" 
-       style="width:36px;height:36px;">
-</a>
-      </div>
-    </div>
-  </div>
+    <h2 class="section-title">Other Lots ($15K+)</h2>
+    <div id="otherGrid" class="grid" aria-live="polite"></div>
 
-  <div class="card budget riviera">
-    <div class="carousel">
-      <img src="https://photos.zillowstatic.com/fp/043d8c6bc137fb21cae2ab46fc109f95-cc_ft_768.webp" alt="10131 El Capitan Way" class="active">
-      <img src="https://photos.zillowstatic.com/fp/67228e89c4fbb358179460cb9876cac0-cc_ft_384.webp" alt="10131 El Capitan Way">
-      <img src="https://photos.zillowstatic.com/fp/d5e463c06465404d70a3f5385abdb3b9-cc_ft_384.webp" alt="10131 El Capitan Way">
-      <img src="https://photos.zillowstatic.com/fp/d64c6d9d9bc88feaa53d438dafd7a5a2-cc_ft_768.webp" alt="10131 El Capitan Way">
-      <img src="https://photos.zillowstatic.com/fp/533160c145328a24204713ae3abcdc8a-cc_ft_384.webp" alt="10131 El Capitan Way">
-      <div class="dots"></div>
-    </div>
-    <div class="card-content">
-      <h3>10131 El Capitan Way, Kelseyville, CA 95451</h3>
-      <p class="price">$12,888</p>
-      <div class="tags">
-        <span class="tag">Kelseyville Riviera</span>
-        <span class="tag">Budget</span>
-        <span class="tag">10,628 sqft</span>
-        <a href="https://wa.me/17864935842?text=I%20am%20interested%20in%2010131%20El%20Capitan%20Way%2C%20Kelseyville%2C%20CA%2095451" 
-   target="_blank" 
-   class="whatsapp-btn">
-  <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" 
-       alt="WhatsApp" 
-       style="width:36px;height:36px;">
-</a>
-      </div>
-    </div>
-  </div>
+    <footer>
+      <p>Information above is taken from seller-provided details. Buyers should verify parcel data, perc tests, taxes, HOA dues, and other facts with county records and title companies before purchase. Map links: use the Map View button on any property card to open Google Maps.</p>
+    </footer>
+  </main>
 
-  <div class="card budget riviera">
-    <div class="carousel">
-      <img src="https://photos.zillowstatic.com/fp/469e33233be8d98787f3925f4b8f8c74-cc_ft_768.webp" alt="10148 El Capitan Way" class="active">
-      <img src="https://photos.zillowstatic.com/fp/ada63e9c5e8273f16a60b1c9a6a4efe3-cc_ft_384.webp" alt="10148 El Capitan Way">
-      <img src="https://photos.zillowstatic.com/fp/460bdb603ae90d6ed5194b3a58d073b0-cc_ft_384.webp" alt="10148 El Capitan Way">
-      <img src="https://photos.zillowstatic.com/fp/663bc0515f35b6609274f99ea139eb56-cc_ft_768.webp" alt="10148 El Capitan Way">
-      <img src="https://photos.zillowstatic.com/fp/460bdb603ae90d6ed5194b3a58d073b0-cc_ft_768.webp" alt="10148 El Capitan Way">
-      <div class="dots"></div>
-    </div>
-    <div class="card-content">
-      <h3>10148 El Capitan Way, Kelseyville, CA 95451</h3>
-      <p class="price">$12,888</p>
-      <div class="tags">
-        <span class="tag">Kelseyville Riviera</span>
-        <span class="tag">Budget</span>
-        <span class="tag">0.26 Acres</span>
-        <a href="https://wa.me/17864935842?text=I%20am%20interested%20in%2010148%20El%20Capitan%20Way%2C%20Kelseyville%2C%20CA%2095451" 
-   target="_blank" 
-   class="whatsapp-btn">
-  <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" 
-       alt="WhatsApp" 
-       style="width:36px;height:36px;">
-</a>
-      </div>
-    </div>
-  </div>
+  <script>
+    // ---------------------------
+    // Original properties data (kept your full dataset)
+    // ---------------------------
+    const properties = [
+      /* Budget Lots (8) */
+      {
+        category: "Budget",
+        address: "10100 El Dorado Way, Kelseyville, CA 95451",
+        price: "$7,888",
+        lotSize: "0.16 acres (7,152 sq.ft.)",
+        utilities: "Electric & water at paved road",
+        hoa: "$140/year",
+        waterFee: "No water stand-by fee",
+        taxes: "Semi-annual $43.38",
+        apn: "043-723-160",
+        notes: "Gentle upslope; valley & mountain views. Seller: “Enjoy Beautiful Valley & Mountain Views… Building up might get a second story lake-view!” Short stroll to Riviera Hills CC; near school.",
+        source: "trulia.com"
+      },
+      {
+        category: "Budget",
+        address: "10634 Boren Bega Dr, Kelseyville, CA 95451",
+        price: "$19,888",
+        lotSize: "0.17 acres",
+        utilities: "Utilities at street",
+        hoa: "$140/year",
+        waterFee: "No water fee",
+        taxes: "Semi-annual $69.46",
+        apn: "053-461-04",
+        notes: "Gently down-sloping lot with great lake views. Quiet one-way street; large trees; seller: “build at street level to maximize view”.",
+        source: "trulia.com"
+      },
+      {
+        category: "Budget",
+        address: "10167 Del Monte Way, Kelseyville, CA 95451",
+        price: "$11,888",
+        lotSize: "0.17 acres",
+        utilities: "Requires septic (perc test needed)",
+        hoa: "$140/year",
+        waterFee: "No water fee",
+        taxes: "Semi-annual $41.95",
+        apn: "043-613-020",
+        notes: "Flat hilltop parcel with trees and landscaping boulders; priced below market. Near Riviera School and country club. Seller: “Flat, hilltop, inexpensive lake-view lot…Wonderful homesite”.",
+        source: "trulia.com"
+      },
+      {
+        category: "Budget",
+        address: "10131 El Capitan Way, Kelseyville, CA 95451",
+        price: "$12,888",
+        lotSize: "≈0.25 acres",
+        utilities: "Utilities at street; perc test complete",
+        hoa: "$140/year",
+        waterFee: "No water fee",
+        taxes: "Semi-annual $41.95",
+        apn: "043-685-03",
+        notes: "Gently down-sloping, mostly cleared; walnut, madrone and pine. Part of 3 adjacent lots; combine for nearly 1 acre. Near grocery and Soda Bay Rd.",
+        source: "trulia.com"
+      },
+      {
+        category: "Budget",
+        address: "10148 El Capitan Way, Kelseyville, CA 95451",
+        price: "$12,888",
+        lotSize: "≈0.33 acres",
+        utilities: "Perc test done; utilities at street",
+        hoa: "$140/year",
+        waterFee: "No water fee",
+        taxes: "Semi-annual $51.66",
+        apn: "043-701-25",
+        notes: "Upslope hill, quiet dead-end street. Valley & mountain views; close to Hwy29 and amenities. Low carrying costs and potential for rising values.",
+        source: "trulia.com"
+      },
+      {
+        category: "Budget",
+        address: "10155 El Capitan Way, Kelseyville, CA 95451",
+        price: "$12,888",
+        lotSize: "0.27 acres",
+        utilities: "Utilities at street; perc done",
+        hoa: "$140/year",
+        waterFee: "No water fee",
+        taxes: "Noted as low (see seller)",
+        apn: "043-701-390",
+        notes: "Gentle down-slope with walnut, pine, manzanita; mid-block on a cul-de-sac. Middle of 3 adjacent lots; seller: “Let's make a deal!” Low closing costs if buyer self-closes.",
+        source: "trulia.com"
+      },
+      {
+        category: "Budget",
+        address: "10161 El Capitan Way, Kelseyville, CA 95451",
+        price: "$13,888",
+        lotSize: "≈0.39 acres",
+        utilities: "Utilities at street; perc done",
+        hoa: "$140/year",
+        waterFee: "No water fee",
+        taxes: "Semi-annual $43.97",
+        apn: "043-701-038",
+        notes: "Gentle down-slope cul-de-sac with manzanita and pine; includes house plans; adjacent to 10155 & 10131 (together ~1 acre). Konocti Resort nearby; partial Hwy29 widening improves access.",
+        source: "trulia.com"
+      },
+      {
+        category: "Budget",
+        address: "5299 Tenino Way (9500 Chippewa Trl), Kelseyville, CA 95451",
+        price: "$8,888",
+        lotSize: "0.262 acres (usable area larger—fronts 3 streets)",
+        utilities: "Utilities at street; perc test complete",
+        hoa: "$140/year",
+        waterFee: "No water fee",
+        taxes: "Semi-annual $54.38",
+        apn: "430-183-04",
+        notes: "Flat, cleared corner parcel; possible second-story lake view; flag-like lot; walking distance to grocery; future lake access via nearby ramps; partial Hwy29 widening nearby.",
+        source: "trulia.com"
+      },
 
-  <div class="card budget riviera">
-    <div class="carousel">
-      <img src="https://photos.zillowstatic.com/fp/043d8c6bc137fb21cae2ab46fc109f95-cc_ft_384.webp" alt="10155 El Capitan Way" class="active">
-      <img src="https://photos.zillowstatic.com/fp/67228e89c4fbb358179460cb9876cac0-cc_ft_384.webp" alt="10155 El Capitan Way">
-      <img src="https://photos.zillowstatic.com/fp/d64c6d9d9bc88feaa53d438dafd7a5a2-cc_ft_384.webp" alt="10155 El Capitan Way">
-      <img src="https://photos.zillowstatic.com/fp/533160c145328a24204713ae3abcdc8a-cc_ft_768.webp" alt="10155 El Capitan Way">
-      <img src="https://photos.zillowstatic.com/fp/61c01e27133420c7741766dbc270612a-cc_ft_768.webp" alt="10155 El Capitan Way">
-      <div class="dots"></div>
-    </div>
-    <div class="card-content">
-      <h3>10155 El Capitan Way, Kelseyville, CA 95451</h3>
-      <p class="price">$12,888</p>
-      <div class="tags">
-        <span class="tag">Kelseyville Riviera</span>
-        <span class="tag">Budget</span>
-        <span class="tag">0.27 Acres</span>
-        <a href="https://wa.me/17864935842?text=I%20am%20interested%20in%2010155%20El%20Capitan%20Way%2C%20Kelseyville%2C%20CA%2095451" 
-   target="_blank" 
-   class="whatsapp-btn">
-  <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" 
-       alt="WhatsApp" 
-       style="width:36px;height:36px;">
-</a>
-      </div>
-    </div>
-  </div>
+      /* Other Lots (the rest) */
+      {
+        category: "Other",
+        address: "8960 Fairway Dr, Kelseyville, CA 95451",
+        price: "$29,888",
+        lotSize: "0.21 acres",
+        utilities: "Utilities ready; perc test on file",
+        hoa: "$140/year",
+        waterFee: "No water fee",
+        taxes: "Semi-annual $94.85",
+        apn: "430-201-200",
+        notes: "Flat parcel with panoramic lake & mountain views; fronts golf course with unobstructed view over Clear Lake. \"Vacant land with an awesome unobstructed view of the lake… septic testing on file.\" Low closing cost option offered.",
+        source: "trulia.com"
+      },
+      {
+        category: "Other",
+        address: "9526 Fairway Dr, Kelseyville, CA 95451",
+        price: "$14,888",
+        lotSize: "0.223 acres",
+        utilities: "Utilities at street",
+        hoa: "$140/year",
+        waterFee: "No water fee",
+        taxes: "Semi-annual $54.38",
+        apn: "430-132-030",
+        notes: "Hilltop parcel flat at street then downslope; excellent lake vistas; free landscaping boulders on site. 2 blocks from Hwy281; easy building.",
+        source: "trulia.com"
+      },
+      {
+        category: "Other",
+        address: "10660 Harbor Rd, Kelseyville, CA 95451",
+        price: "$21,888",
+        lotSize: ">0.25 acre",
+        utilities: "Utilities at street",
+        hoa: "$160/year",
+        waterFee: "No water fee",
+        taxes: "Semi-annual $81.35",
+        apn: "430-241-150",
+        notes: "Quarter-acre+ near private boat harbor on Clear Lake. Mature trees; great lake views; self-close option saves thousands.",
+        source: "trulia.com"
+      },
+      {
+        category: "Other",
+        address: "4587 Hawaina Way, Kelseyville, CA 95451",
+        price: "$14,888",
+        lotSize: "Not specified",
+        utilities: "Utilities at street; soil test done (50' per bedroom)",
+        hoa: "Varies / not listed",
+        waterFee: "No water fee",
+        taxes: "Not listed",
+        apn: "Not listed",
+        notes: "Private parcel near subdivision entrance; slight downhill grade. Can possibly build a lake-view by adding a second story. Close to grocery, coffee shops and wineries; peaceful Riviera location.",
+        source: "trulia.com"
+      },
+      {
+        category: "Other",
+        address: "4835 Hawaina Way, Kelseyville, CA 95451",
+        price: "$14,888",
+        lotSize: "0.18 acres (usable area larger due to extra greenbelt lot behind)",
+        utilities: "Utilities at street",
+        hoa: "$160/year",
+        waterFee: "No water fee",
+        taxes: "Semi-annual $62.50",
+        apn: "043-351-04",
+        notes: "Fronts lakeview in both front and back; shade trees and native herbs. Includes adjacent unused road right-of-way as greenbelt; abundant wildlife; walking distance to Soda Bay Rd.",
+        source: "trulia.com"
+      },
+      {
+        category: "Other",
+        address: "4660 Hawaina Way, Kelseyville, CA 95451",
+        price: "$35,888",
+        lotSize: "0.20 acres",
+        utilities: "Utilities at street",
+        hoa: "$140/year",
+        waterFee: "No water fee",
+        taxes: "Semi-annual $78.72",
+        apn: "043-382-080",
+        notes: "Fronts a Riviera golf course green with unobstructed lake views through mature pines. Nearly flat; landscaping boulders on site; only unbuilt lot in Riviera fronting a green.",
+        source: "trulia.com"
+      },
+      {
+        category: "Other",
+        address: "4696 Hawaina Way, Kelseyville, CA 95451",
+        price: "$16,888",
+        lotSize: "0.175 acres",
+        utilities: "Utilities at street",
+        hoa: "$140/year",
+        waterFee: "No water fee",
+        taxes: "Semi-annual $39.79",
+        apn: "043-362-150",
+        notes: "Fronts golf course tee box; peak lake and Mt. Konocti views. Prominent rock outcropping and boulders on site; street-level at Hawaina for easy access.",
+        source: "trulia.com"
+      },
+      {
+        category: "Other",
+        address: "4840 Cascade Way, Kelseyville, CA 95451",
+        price: "$11,888",
+        lotSize: "0.237 acres",
+        utilities: "Utilities at street; perc approved for alternative septic (50' per bedroom)",
+        hoa: "$140/year",
+        waterFee: "No water fee",
+        taxes: "Semi-annual $32.27",
+        apn: "043-685-030",
+        notes: "Gently upslope from road with open greenbelt behind. Mature trees; secluded; deer frequent. Perc test done (saves ~$1,000).",
+        source: "trulia.com"
+      },
+      {
+        category: "Other",
+        address: "4910 Hawaina Way (10255 Hok Has Ha Ln), Kelseyville, CA 95451",
+        price: "$15,888",
+        lotSize: "0.20 acres (corner lot)",
+        utilities: "Utilities at street",
+        hoa: "$140/year",
+        waterFee: "No water fee",
+        taxes: "Semi-annual $59.70",
+        apn: "043-343-02",
+        notes: "Almost flat with views of a large pond fed by local water company. Multiple addressing options; native flowers and heavy wildlife; close to Konocti Resort and Hwy29 widening.",
+        source: "trulia.com"
+      },
+      {
+        category: "Other",
+        address: "9155 Hoopa Dr, Kelseyville, CA 95451",
+        price: "$15,888",
+        lotSize: "Not given",
+        utilities: "Utilities at street; perc test done",
+        hoa: "$140/year",
+        waterFee: "No water fee",
+        taxes: "Semi-annual $85.55",
+        apn: "430-101-07",
+        notes: "Flat hilltop lot (~3' above street) with unobstructed lake views; easy build; one of the last under-$20k lots; neighborhood pays for road maintenance.",
+        source: "trulia.com"
+      },
+      {
+        category: "Other",
+        address: "4672 Iroquois Trl, Kelseyville, CA 95451",
+        price: "$13,888",
+        lotSize: "0.37 acres",
+        utilities: "Electricity & water at street",
+        hoa: "$140/year",
+        waterFee: "No water fee",
+        taxes: "Semi-annual $74.44",
+        apn: "043-661-050",
+        notes: "Gently downslope toward lake; heavily wooded; one lot away from Clear Lake Riviera's lakefront greenbelt. Desirable Kelseyville Riviera; backs to greenbelt; close to shops.",
+        source: "trulia.com"
+      },
+      {
+        category: "Other",
+        address: "4883 Iroquois Trl, Kelseyville, CA 95451",
+        price: "$12,888",
+        lotSize: "0.18 acres",
+        utilities: "Utilities at street",
+        hoa: "$140/year",
+        waterFee: "No water fee",
+        taxes: "Not stated",
+        apn: "043-681-030",
+        notes: "Gently sloping with manzanita, oak and pine; includes large landscaping boulders. Ideal for walk-out basement design; very private; near grocery and Soda Bay Rd.",
+        source: "trulia.com"
+      },
+      {
+        category: "Other",
+        address: "4917 Iroquois Trl, Kelseyville, CA 95451",
+        price: "$14,888",
+        lotSize: "0.24 acres",
+        utilities: "Utilities at street; good perc test on file",
+        hoa: "$140/year",
+        waterFee: "No water fee",
+        taxes: "Semi-annual $61.08",
+        apn: "043-681-050",
+        notes: "Quarter-acre parcel cleared with 2WD driveway; elevation gain gives lake views. Next door 4883 Iroquois available — can combine for ~0.42 ac.",
+        source: "trulia.com"
+      },
+      {
+        category: "Other",
+        address: "4810 Kah Bel Trl, Kelseyville, CA 95451",
+        price: "$11,888",
+        lotSize: "0.236 acres",
+        utilities: "Utilities at street",
+        hoa: "$140/year",
+        waterFee: "No water fee",
+        taxes: "Semi-annual $19.48",
+        apn: "043-384-060",
+        notes: "Downslope hilltop with mature trees and landscaping rocks; lake visible from all points. Cheap lake-view lot; abundant wildlife; perc test required for septic.",
+        source: "trulia.com"
+      },
+      {
+        category: "Other",
+        address: "4622 Kaweah Rd, Kelseyville, CA 95451",
+        price: "$12,888",
+        lotSize: "Not given (near end of cul-de-sac)",
+        utilities: "Utilities at street",
+        hoa: "$140/year",
+        waterFee: "No water fee",
+        taxes: "Semi-annual $48.23",
+        apn: "043-673-010",
+        notes: "Gently downslope with olive trees; private wooded lot; ideal for walk-out basement; few nearby lots remain undeveloped.",
+        source: "trulia.com"
+      },
+      {
+        category: "Other",
+        address: "4706 Kaweah Rd, Kelseyville, CA 95451",
+        price: "$12,888",
+        lotSize: "≈0.33 acres",
+        utilities: "Utilities at street; perc approved for steep-slope system (30' per bedroom)",
+        hoa: "$140/year",
+        waterFee: "No water fee",
+        taxes: "Semi-annual $53.96",
+        apn: "043-673-005",
+        notes: "Downsloping wooded lot with valley & mountain views; abundant native trees and wildlife. Rare large parcel; seller can guide self-close for ~$30.",
+        source: "trulia.com"
+      },
+      {
+        category: "Other",
+        address: "4995 Klamath Rd, Kelseyville, CA 95451",
+        price: "$27,888",
+        lotSize: "0.63 acres",
+        utilities: "Water & electric to street",
+        hoa: "$140/year",
+        waterFee: "No water fee",
+        taxes: "Semi-annual $53.96",
+        apn: "043-691-070",
+        notes: "Very large lot on a quiet cul-de-sac; every part has lake view; mature trees; near Soda Bay Rd, shopping and schools; selectively trim trees for more view.",
+        source: "trulia.com"
+      },
+      {
+        category: "Other",
+        address: "5327 Monterey Pl, Kelseyville, CA 95451",
+        price: "$13,888",
+        lotSize: "0.33 acres",
+        utilities: "Utilities at street; good perc (63' per bedroom)",
+        hoa: "$160/year",
+        waterFee: "No water fee",
+        taxes: "Semi-annual noted",
+        apn: "043-605-100",
+        notes: "Large upsloping lot; lake view from back; close to shopping and wineries; neighbors 5313 & 5341 Monterey also available.",
+        source: "trulia.com"
+      },
+      {
+        category: "Other",
+        address: "5341 Monterey Pl, Kelseyville, CA 95451",
+        price: "$13,888",
+        lotSize: "0.304 acres",
+        utilities: "Utilities at street; perc test complete",
+        hoa: "$140/year",
+        waterFee: "No water fee",
+        taxes: "Semi-annual $38.42",
+        apn: "043-614-016",
+        notes: "Upsloping parcel with trees and lake view from rear. Completed perc test saves $1,000; adjacent 5355 & 5369 Monterey also for sale (nearly acre).",
+        source: "trulia.com"
+      },
+      {
+        category: "Other",
+        address: "5355 Monterey Pl, Kelseyville, CA 95451",
+        price: "$12,888",
+        lotSize: "0.294 acres",
+        utilities: "Utilities at street",
+        hoa: "$140/year",
+        waterFee: "No water fee",
+        taxes: "Semi-annual $72.90",
+        apn: "043-614-150",
+        notes: "Upsloping lot with excellent lake views from back; distinctive boulders at rear; middle of three contiguous lots; seller self-close savings.",
+        source: "trulia.com"
+      },
+      {
+        category: "Other",
+        address: "5369 Monterey Pl, Kelseyville, CA 95451",
+        price: "$12,888",
+        lotSize: "0.29 acres",
+        utilities: "Utilities at street; perc info noted",
+        hoa: "$140/year",
+        waterFee: "No water fee",
+        taxes: "Semi-annual $42.51",
+        apn: "043-614-014",
+        notes: "Upsloping parcel with lake views and landscaping boulders. Quiet cul-de-sac; buy with adjacent lots for nearly an acre.",
+        source: "trulia.com"
+      },
+      {
+        category: "Other",
+        address: "10858 Northslope Dr, Kelseyville, CA 95451",
+        price: "$22,888",
+        lotSize: "0.28 acres",
+        utilities: "Water & electric at street",
+        hoa: "$140/year",
+        waterFee: "No water fee",
+        taxes: "Semi-annual $48.23",
+        apn: "043-472-001",
+        notes: "Street-to-street lot at top of hill directly above the lake; panoramic views filtered through oak trees; corner lot expansion; self-close option offered ($50 vs $1400).",
+        source: "trulia.com"
+      },
+      {
+        category: "Other",
+        address: "10894 Northslope Dr, Kelseyville, CA 95451",
+        price: "$13,888",
+        lotSize: "0.22 acres",
+        utilities: "Utilities at street; good perc test for septic",
+        hoa: "$140/year",
+        waterFee: "No water fee",
+        taxes: "Semi-annual $27.49",
+        apn: "043-472-100",
+        notes: "Moderately downsloping with native trees and boulders; broad lake view. Near end of quiet street; multiple access routes.",
+        source: "trulia.com"
+      },
+      {
+        category: "Other",
+        address: "10898 Northslope Dr, Kelseyville, CA 95451",
+        price: "$12,888",
+        lotSize: "0.22 acres",
+        utilities: "Utilities at street",
+        hoa: "$160/year",
+        waterFee: "No water fee",
+        taxes: "Semi-annual $55.18",
+        apn: "043-472-110",
+        notes: "Downsloping lot with trees and boulders; excellent lake views. Build at street-level for best vistas. Self-close option ($30).",
+        source: "trulia.com"
+      },
+      {
+        category: "Other",
+        address: "9960 Point Lakeview Rd, Kelseyville, CA 95451",
+        price: "$16,888",
+        lotSize: "0.28 acres",
+        utilities: "Utilities at street",
+        hoa: "$140/year",
+        waterFee: "No water fee",
+        taxes: "Semi-annual $91.37",
+        apn: "043-691-280",
+        notes: "Gently downsloping large parcel off Soda Bay Rd on Pt. Lakeview Rd; mixed walnut, pine and manzanita; huge lake & mountain views; prime location close to town center.",
+        source: "trulia.com"
+      },
+      {
+        category: "Other",
+        address: "9815 Sequoia Rd, Kelseyville, CA 95451",
+        price: "$15,888",
+        lotSize: "0.17 acres (corner effective ~0.25 ac)",
+        utilities: "Utilities at street",
+        hoa: "$140/year",
+        waterFee: "No water fee",
+        taxes: "Semi-annual $36.78",
+        apn: "043-675-004",
+        notes: "Nearly flat cleared corner lot with four mature walnut trees; excellent mountain and valley views; walk to Richmond Park on lake.",
+        source: "trulia.com"
+      },
+      {
+        category: "Other",
+        address: "10860 Skyview Dr, Kelseyville, CA 95451",
+        price: "$29,888",
+        lotSize: "0.303 acres (corner larger effective area)",
+        utilities: "Utilities at street",
+        hoa: "$160/year",
+        waterFee: "No water fee",
+        taxes: "Semi-annual $90.95",
+        apn: "043-642-025",
+        notes: "Street-to-street parcel near hilltop with stupendous lake views. No structures; native fauna. Self-close available ($50 vs $1400).",
+        source: "trulia.com"
+      },
+      {
+        category: "Other",
+        address: "10691 Sunset Ridge Dr, Kelseyville, CA 95451",
+        price: "$13,888",
+        lotSize: "0.30 acres",
+        utilities: "Utilities available; perc test (75' per bedroom)",
+        hoa: "$140/year",
+        waterFee: "No water fee", 
+        taxes: "Semi-annual $61.08",
+        apn: "043-522-130",
+        notes: "Mostly flat at street then downsloping; free landscaping rocks on site; near Riviera School and Hills CC; perc test done.",
+        source: "trulia.com"
+      },
+      {
+        category: "Other",
+        address: "9719 Tenaya Way, Kelseyville, CA 95451",
+        price: "$13,888",
+        lotSize: "0.15 acres",
+        utilities: "Utilities at street; perc test complete",
+        hoa: "$140/year",
+        waterFee: "No water fee",
+        taxes: "Semi-annual $32.93",
+        apn: "043-732-060",
+        notes: "Flat hilltop with lake views; mature trees and landscaping boulders; ready to build; quiet upscale neighborhood near Soda Bay Rd.",
+        source: "trulia.com"
+      },
+      {
+        category: "Other",
+        address: "5248 Tenino Way, Kelseyville, CA 95451",
+        price: "$23,888",
+        lotSize: "0.20 acres",
+        utilities: "Utilities at street",
+        hoa: "$140/year",
+        waterFee: "No water fee",
+        taxes: "Semi-annual $32.27",
+        apn: "430-133-010",
+        notes: "Very private 'flag lot' on hilltop with panoramic lake views; hidden behind homes yet accessible; alternate exit to Soda Bay Rd; self-close offered.",
+        source: "trulia.com"
+      },
+      {
+        category: "Other",
+        address: "5299 Tenino Way (duplicate), Kelseyville, CA 95451",
+        price: "$8,888",
+        lotSize: "0.262 acres (duplicate listing)",
+        utilities: "Utilities at street; perc test complete",
+        hoa: "$140/year",
+        waterFee: "No water fee",
+        taxes: "Semi-annual $54.38",
+        apn: "430-183-04",
+        notes: "Duplicate entry in listing — same as budget property at 5299 Tenino Way (9500 Chippewa Trl).",
+        source: "trulia.com"
+      },
+      {
+        category: "Other",
+        address: "6895 Echo Dr, Kelseyville, CA 95451",
+        price: "$18,888",
+        lotSize: "0.32 acres",
+        utilities: "Utilities at street",
+        hoa: "$525/year (Riviera Heights HOA)",
+        waterFee: "No water fee",
+        taxes: "Semi-annual $94.24",
+        apn: "Not listed",
+        notes: "Downsloping lake-view lot; pine and madrone trees; waterfront district; built for view at street level; self-close guidance offered.",
+        source: "trulia.com"
+      },
+      {
+        category: "Other",
+        address: "3076 Riviera Heights Dr, Kelseyville, CA 95451",
+        price: "$16,888",
+        lotSize: "0.37 acres",
+        utilities: "Utilities available; perc test (50' per bedroom)",
+        hoa: "$475/year",
+        waterFee: "No water transfer fee or annual standby",
+        taxes: "Semi-annual $62.84",
+        apn: "Not listed",
+        notes: "Downsloping wooded lot in prestigious HOA; seasonal infinity pool 2 minutes away; 15+ acre lakefront facilities including docks and beach.",
+        source: "trulia.com"
+      },
+      {
+        category: "Other",
+        address: "3080 Riviera Heights Dr, Kelseyville, CA 95451",
+        price: "$16,888",
+        lotSize: "0.17 acres",
+        utilities: "Utilities available; soils good for septic",
+        hoa: "$475/year",
+        waterFee: "No water fee",
+        taxes: "Semi-annual unknown",
+        apn: "Not listed",
+        notes: "Gentle-to-medium down-slope with partial lake view; includes Riviera Heights amenities: infinity pool, boat slip, clubhouse and private lakeshore.",
+        source: "trulia.com"
+      },
+      {
+        category: "Other",
+        address: "3091 Riviera Heights Dr, Kelseyville, CA 95451",
+        price: "$21,888",
+        lotSize: "≈0.20 acres",
+        utilities: "Utilities at street; perc test (30' per bedroom alt system)",
+        hoa: "$525/year",
+        waterFee: "No water fee",
+        taxes: "Semi-annual $36.54",
+        apn: "Not listed",
+        notes: "Upsloping lot with great views; short walk to infinity pool; 15+ acre lakefront amenities included; low closing cost offer ($50 vs $1400).",
+        source: "trulia.com"
+      },
+      {
+        category: "Other",
+        address: "12991 San Joaquin Ave, Clearlake, CA 95422",
+        price: "$24,500",
+        lotSize: "Not given",
+        utilities: "All utilities at street (water, sewer, electric)",
+        hoa: "No HOA / no dues",
+        waterFee: "No water fee",
+        taxes: "Semi-annual $58.81",
+        apn: "Not given",
+        notes: "Downslope lot touching Napa St below; jaw-dropping panoramic lake views; ready to build; only 5 minutes to downtown Clearlake.",
+        source: "trulia.com"
+      }
+    ];
 
-  <div class="card budget riviera">
-    <div class="carousel">
-      <img src="https://photos.zillowstatic.com/fp/5b402b26f2db5325390aa3eb69e9bd3d-cc_ft_768.webp" alt="10161 El Capitan Way" class="active">
-      <img src="https://photos.zillowstatic.com/fp/3bdefbff3271cf818d96e0c605838c69-cc_ft_384.webp" alt="10161 El Capitan Way">
-      <img src="https://photos.zillowstatic.com/fp/644086bca93cd763d7a680652cc446fb-cc_ft_384.webp" alt="10161 El Capitan Way">
-      <img src="https://photos.zillowstatic.com/fp/9f38673976fc7cf185877f2a7f46c7bb-cc_ft_384.webp" alt="10161 El Capitan Way">
-      <img src="https://photos.zillowstatic.com/fp/a569c054455e4f112d663cc89a9da2a5-cc_ft_768.webp" alt="10161 El Capitan Way">
-      <div class="dots"></div>
-    </div>
-    <div class="card-content">
-      <h3>10161 El Capitan Way, Kelseyville, CA 95451</h3>
-      <p class="price">$13,888</p>
-      <div class="tags">
-        <span class="tag">Kelseyville Riviera</span>
-        <span class="tag">Budget</span>
-        <span class="tag">0.37 Acres</span>
-        <a href="https://wa.me/17864935842?text=I%20am%20interested%20in%2010161%20El%20Capitan%20Way%2C%20Kelseyville%2C%20CA%2095451" 
-   target="_blank" 
-   class="whatsapp-btn">
-  <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" 
-       alt="WhatsApp" 
-       style="width:36px;height:36px;">
-</a>
-      </div>
-    </div>
-  </div>
+    // ---------------------------
+    // Provided images mapping (your Zillow URLs keyed by exact address)
+    // ---------------------------
+    const providedImages = {
+      "10100 El Dorado Way, Kelseyville, CA 95451": [
+        "https://photos.zillowstatic.com/fp/3df0cc21401a707ba22e3c02126ddd25-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/7ffbc393cb2efb17bf5d19f862e4c2b6-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/a5e4086f4a3eb725eab8e76fa1d58346-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/7f5edac6299f4d430a1986a7e8548a6d-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/18ce3ada1d6b3bf4c229a0a082ab6239-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/0f5f09511d782c51dd6c5bb0159833fd-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/f0357d6c595ed61844dd94d3641615c1-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/a569c054455e4f112d663cc89a9da2a5-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/bff17cf750c6cc7501361750a48ba2de-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/6e5e33da1426fc9e73af0a3d69838a61-cc_ft_384.webp"
+      ],
+      "10634 Boren Bega Dr, Kelseyville, CA 95451": [
+        "https://photos.zillowstatic.com/fp/fe8455d7d14726efaca7eb261e1f58f6-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/f76089131fdb860d807aa85835bc5533-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/d9ffa7062bae6100f8834ccea3fe9fac-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/e59312c05aca952198341cb5eeb74a90-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/54b7c248fd126f888011a1ec3d15ca94-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/e59312c05aca952198341cb5eeb74a90-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/5bb3e5693580763b1680a06b5530fc4c-cc_ft_384.webp"
+      ],
+      "10167 Del Monte Way, Kelseyville, CA 95451": [
+        "https://photos.zillowstatic.com/fp/bfe4f67ad42110d32bbb3f9035e15c80-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/ff2a2e3dc6a11a469c886b51972223be-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/9dbcd7d827139255faf30e2c7ccc715c-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/dd1ea4773f59bdd80335a302f22f890d-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/9b6767371815dac2c246669ce8701e42-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/9b6767371815dac2c246669ce8701e42-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/68548dff5724a235db069a16cf1c39c6-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/fae0c8083c7359950356f73a24080f13-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/ffc4dca3481f12959456d49d460b0688-cc_ft_768.webp"
+      ],
+      "10131 El Capitan Way, Kelseyville, CA 95451": [
+        "https://photos.zillowstatic.com/fp/043d8c6bc137fb21cae2ab46fc109f95-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/d5e463c06465404d70a3f5385abdb3b9-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/67228e89c4fbb358179460cb9876cac0-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/25af78ab361688546c82f9fc75004e74-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/533160c145328a24204713ae3abcdc8a-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/c8e94c75e38207a17317c1eb9fca873d-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/d64c6d9d9bc88feaa53d438dafd7a5a2-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/be7ed7e50754a35a7374499409843ce0-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/76ca5c41697b74a8ad8e9492a3cc26c9-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/6f22b035ae15b481827ef81d04753cfe-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/61c01e27133420c7741766dbc270612a-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/daef9916c2a48da3a9f42513951b53d5-cc_ft_384.webp"
+      ],
+      "10148 El Capitan Way, Kelseyville, CA 95451": [
+        "https://photos.zillowstatic.com/fp/469e33233be8d98787f3925f4b8f8c74-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/ada63e9c5e8273f16a60b1c9a6a4efe3-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/0f4989caf67859b66d6c18d50aed3816-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/460bdb603ae90d6ed5194b3a58d073b0-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/a0dc82577399ded8e689c60d7cc64bf3-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/8fd0e02979e775d747bca338c902a4b9-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/663bc0515f35b6609274f99ea139eb56-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/26e8550df02d29fd401aa5956a28a457-cc_ft_768.webp"
+      ],
+      "10155 El Capitan Way, Kelseyville, CA 95451": [
+        "https://photos.zillowstatic.com/fp/d5e463c06465404d70a3f5385abdb3b9-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/043d8c6bc137fb21cae2ab46fc109f95-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/67228e89c4fbb358179460cb9876cac0-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/d64c6d9d9bc88feaa53d438dafd7a5a2-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/533160c145328a24204713ae3abcdc8a-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/dfc74706c2b8c80c747875bf62ece21e-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/61c01e27133420c7741766dbc270612a-cc_ft_768.webp"
+      ],
+      "10161 El Capitan Way, Kelseyville, CA 95451": [
+        "https://photos.zillowstatic.com/fp/5b402b26f2db5325390aa3eb69e9bd3d-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/3bdefbff3271cf818d96e0c605838c69-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/644086bca93cd763d7a680652cc446fb-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/55357f5ab60e82d34694cedf239f4476-cc_ft_384.webp"
+      ],
+       "5299 Tenino Way, Kelseyville, CA 95451": [
+    "https://photos.zillowstatic.com/fp/fc49fc740d49e7b080f6a54307516b55-cc_ft_768.webp",
+    "https://photos.zillowstatic.com/fp/6ebcd006886ee90fafb5f99a606a3422-cc_ft_384.webp",
+    "https://photos.zillowstatic.com/fp/fa0d6ebc6ae6388846911cd11859111b-cc_ft_384.webp",
+    "https://photos.zillowstatic.com/fp/6ab96bdf8958ecded8226b6bd51df1e6-cc_ft_384.webp",
+    "https://photos.zillowstatic.com/fp/cc81b7a51cd5f042b2e4349dceb8be93-cc_ft_384.webp",
+    "https://photos.zillowstatic.com/fp/af6327a9a1cae41f1bdf2b3ba386bcff-cc_ft_768.webp",
+    "https://photos.zillowstatic.com/fp/8ef577c1dbbab6838f409057fe9f9b50-cc_ft_384.webp",
+    "https://photos.zillowstatic.com/fp/a543192dcf8f516d1a96eded9459f959-cc_ft_384.webp",
+    "https://photos.zillowstatic.com/fp/68523f6c93a8626e38afd05b8a73047e-cc_ft_768.webp",
+    "https://photos.zillowstatic.com/fp/c32d59ad50c8abc5fe7b6109d2cc4160-cc_ft_384.webp",
+    "https://photos.zillowstatic.com/fp/4e95065295d034d2c520f5d336ab4241-cc_ft_384.webp",
+    "https://photos.zillowstatic.com/fp/9110b126ce7b15ecf36517208efe1aec-cc_ft_768.webp",
+    "https://photos.zillowstatic.com/fp/f8686168e4842f98d8d54bf713f7f1ca-cc_ft_384.webp",
+    "https://photos.zillowstatic.com/fp/435c0e520ac81f4e257e1c1f36eef317-cc_ft_384.webp",
+    "https://photos.zillowstatic.com/fp/8500c66d264eeeeb535e4c94b89b3971-cc_ft_768.webp",
+    "https://photos.zillowstatic.com/fp/10f1d4129f5877e046cf3d452aa9c6eb-cc_ft_384.webp",
+    "https://photos.zillowstatic.com/fp/b05862e9432893ba3ee069c8b8a49548-cc_ft_384.webp",
+    "https://photos.zillowstatic.com/fp/7df1ab1907d27975fd5d63362c0ce546-cc_ft_768.webp",
+    "https://photos.zillowstatic.com/fp/e459546de33faa5bbb7e97fa58e549c8-cc_ft_768.webp"
+  ],
+      "8960 Fairway Dr, Kelseyville, CA 95451": [
+        "https://photos.zillowstatic.com/fp/1cf681cad56dbe72b0ff630e24ee4b90-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/e8123d0c71fb68593bf9e8e8f6ecc428-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/316093229ef5e28745090e4018917bb8-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/7e87014e4e05734321e94dbb5c0ff999-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/b53998bec0530848261a91cfcb0401f7-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/795ede6c70ae1e0c4241b110a61137e8-cc_ft_384.webp"
+      ],
+      "9526 Fairway Dr, Kelseyville, CA 95451": [
+        "https://photos.zillowstatic.com/fp/798c1a33b5f796f3c99b01bb80b84f04-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/f0357d6c595ed61844dd94d3641615c1-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/5ce7d90f53eb656c634caeb1c8d06700-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/818a619c45f33b07a1aecbe57cf8d4eb-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/5ce7d90f53eb656c634caeb1c8d06700-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/4d7752a2e924a81497c0480a057366c1-cc_ft_384.webp"
+      ],
+      "10660 Harbor Rd, Kelseyville, CA 95451": [
+        "https://photos.zillowstatic.com/fp/eb5af28d099463f95fadbe832bc33b9f-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/34030e6b8c9d0840aea3c47d57ebfc59-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/609adf9dc94975f83d75be73a5da4327-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/955c511ca8b023e6ee5814960e16bec0-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/955c511ca8b023e6ee5814960e16bec0-cc_ft_768.webp"
+      ],
+      "4587 Hawaina Way, Kelseyville, CA 95451": [
+        "https://photos.zillowstatic.com/fp/55b459e54d7e1a1f5f5f8b95946ab31a-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/b7652010627caf2a24a674412005f5f2-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/f0b65723c2cc88c9ca2a467a0253427f-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/929b78e92b5e7b56d4ef5be255902298-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/aefda3575425b5dc18068008081dd750-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/aefda3575425b5dc18068008081dd750-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/d96fda7d22b693b51cd9b3ecd57d282a-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/da1633668c594e01af93bb5ab4ca51f3-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/df472f485ffc32136ba2f3f6ba4df712-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/80872a282c384300538e1523ab5126f4-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/a304456c9f425e1627a89dd960678df2-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/3e95aa498bc8fcaf4b72d8e7f75cf6b4-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/289f4ab192082cdaf22cfb837cbe1b56-cc_ft_384.webp"
+      ],
+      "4835 Hawaina Way, Kelseyville, CA 95451": [
+        "https://photos.zillowstatic.com/fp/cc09086f5bf927f4f53b7e1cd5221e73-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/cc541fa7c34ea4d4feec68e2e795e54c-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/c25abaa8c91ea2502f39741706dd9b92-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/e13b2484cdcf0e459cd9f9564499fc09-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/f28ef10c36ad6bddad2939caa5f447d6-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/29a707587dffcee7aed1dfb071b84826-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/c678fb79ba936592df9e6f4fefe332a9-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/9a6547b4560ccc76ad0fc64e9fd7d958-cc_ft_768.webp"
+      ],
+      "4660 Hawaina Way, Kelseyville, CA 95451": [
+        "https://photos.zillowstatic.com/fp/63d7389cdad451bebfe1e897a9501057-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/ad874da281fd887d3f63813d97ce0bc1-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/4b2b4e20b97efd345280fdf3fc20afb9-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/e1a610d95f578f8ec4ecdc0a17cb2834-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/454ba76ef0701a4220311d1bffde3f38-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/a2645259b2644b197df5392d541b154b-cc_ft_768.webp"
+      ],
+      "4696 Hawaina Way, Kelseyville, CA 95451": [
+        "https://photos.zillowstatic.com/fp/2a510f3abab2c0f4a9c96af968384b43-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/aad4c62aa03c7245f22e12e8214d1862-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/0298ca1d564f9a0b08cce97ea8f60b0c-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/558db7d570d9439fd3624542a9c12bf4-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/14bd71a29cf503eac16552f74c9ead9e-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/ab3ae93115dd44db0d68b783066aabca-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/4da9b6ac66539ffac2f7910b191f7464-cc_ft_768.webp"
+      ],
+      "4840 Cascade Way, Kelseyville, CA 95451": [
+        "https://photos.zillowstatic.com/fp/2aeed5001a3cc18367eafb1e826cf19c-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/e8da2554c4e4f8534fd0dde55e8322cd-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/45b1f04a747af48d9df08b0ba7326cdd-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/d24eedf9dc41ab2940c499a40c36f752-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/55357f5ab60e82d34694cedf239f4476-cc_ft_384.webp"
+      ],
+      "4910 Hawaina Way (10255 Hok Has Ha Ln), Kelseyville, CA 95451": [
+        "https://photos.zillowstatic.com/fp/3cb2dc35084d87ab7624cdd8bb68ec8e-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/f9f58aa723e8f5ec98d8b2f8f340b255-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/b5cd32c6967f8a5f438b94ff2b2862a3-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/9a72689be51b9def68658e30e52fe330-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/f3bfe2d1f499201999eb1fa32f890667-cc_ft_768.webp"
+      ],
+      "9155 Hoopa Dr, Kelseyville, CA 95451": [
+        "https://photos.zillowstatic.com/fp/cf1a38dc9e3a36b89d049449dfed846b-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/77bc7df2fdd29c0f69d6a67e096c63f4-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/a3343577ca4146a2abc6d7006f546090-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/a3343577ca4146a2abc6d7006f546090-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/0f5f09511d782c51dd6c5bb0159833fd-cc_ft_768.webp"
+      ],
+      "4672 Iroquois Trl, Kelseyville, CA 95451": [
+        "https://photos.zillowstatic.com/fp/59b27ee95bc210d393e86746a7efb996-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/68f556aecf37d6f3901a6bc4bdf1c0a4-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/a421b70eea27b74b29b40fc61167f78c-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/32c9772d3c2f34bcb166209a0fa4ec59-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/14f944c782bd1e4463996c02fb0aabc7-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/a5cb0c9694d283e98137c9e8a7d6aeb8-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/7769271e6ba549386f3897d7d6022d10-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/6bf81b5fdfa45d3729da985501147cd0-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/aef18f662bfc73b0bd06e68ca492f864-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/f61cad33f266dddab55d8e4d0c019e99-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/1b2d25006925d64d639ce6f98db90fe4-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/cbdd17266906eece2298427a81f41190-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/6dcb5a76e32fe3cf779e2d5aebe50810-cc_ft_768.webp"
+      ],
+      "4883 Iroquois Trl, Kelseyville, CA 95451": [
+        "https://photos.zillowstatic.com/fp/d1d7e84026d33889d9a0d40234f1da32-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/3a12be8478568f84fafc4adcfce1ade3-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/6974fbc5cbc610b89bc8066feac6043e-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/198f0723b0cbcbcc2cbdd6d9bc160c16-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/5bffca2c1997f2d30af830db545cff72-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/efdf31eb9deb75d07262d84d7e7d9d94-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/ce7a2abad0a55d8668fe408a78ec4f52-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/02cbc173b665a2d34337ac8dc6ddfc50-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/e7677301d51ad6157de4ae37286b0fc6-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/12c5f9de0d9313df0e07379d0e07b56b-cc_ft_768.webp"
+      ],
+      "4917 Iroquois Trl, Kelseyville, CA 95451": [
+        "https://photos.zillowstatic.com/fp/ce7a2abad0a55d8668fe408a78ec4f52-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/a5c7243e0dbc8c5c8c39e0e812d6be3e-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/6fe3619e14d1b6a3b8c32909e4b676fa-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/dd95f1629e094c2032268b43d50c05b7-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/01cdc8ca9bc2a2460ae6bfeae156c2d5-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/814c12470aeaf734318024e412d751b6-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/1747ebe374f9deec08cc3657269a1510-cc_ft_768.webp"
+      ],
+      "4810 Kah Bel Trl, Kelseyville, CA 95451": [
+        "https://photos.zillowstatic.com/fp/0c0eb5b86a95beab3448f585d793dd1f-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/e9231992bf58015335be7dc0cefe3e70-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/b0996cdf82af1552a294008fbb5dd9b4-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/ab2b76102b8d56761cbe82ecc05841e8-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/44f3e39d186be71007cd1aba02de6339-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/bf96317dcc319b6b3be13dd7cb656028-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/88a3af5666cb7dbe4dd1e1b1e8abd37b-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/a5be966e05d63d9b618863eabe98974d-cc_ft_384.webp"
+      ],
+      "4622 Kaweah Rd, Kelseyville, CA 95451": [
+        "https://photos.zillowstatic.com/fp/e3eca46412ea979edf40012809c4c209-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/f40c82ae945eb8b10d8df8c4c62ae534-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/6db426195af54f34c86cc18874c8f232-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/70781c5e51c7d2a157db414afbad8460-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/e3ce76eb1cd3674986d9a268ca967f71-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/bb8dc4de8c79940a4c6bdbe0a551cc15-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/cc4986a67042d082717fb0a967e75ec1-cc_ft_768.webp"
+      ],
+      "4706 Kaweah Rd, Kelseyville, CA 95451": [
+        "https://photos.zillowstatic.com/fp/eeee49082e88f928e15ab63d9220c86e-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/9c5b3860e356303623e64775e2036076-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/3f51d469c7bf6d3d5e3bc559c16e6f21-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/347a1f7f3ec836db8934bb1056ce5ed4-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/318fa56539a0839e216bcb405fc7100d-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/8ba6485e2a8a2f51cccca4b69d4fc39f-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/471a425f2fa2d8be82e3eca425e8a42f-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/3bf0dcd257fda82e8751af4f4c6683c6-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/ed00af57d0c3984c299aeedc425fec27-cc_ft_768.webp"
+      ],
+      "4995 Klamath Rd, Kelseyville, CA 95451": [
+        "https://photos.zillowstatic.com/fp/bd086eaff5bb510ec55399ad787a62b6-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/c370a008b750ca78cb7a886c6786f7ea-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/bca1242e06a9c5851003ff5e933daa83-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/bab1cb59fe33fd0549ee0429357eb759-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/2dd90cc11496a8fa667c98772ac5e9f5-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/2dd90cc11496a8fa667c98772ac5e9f5-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/5e61ed7c80854b1d66628bbe256452ab-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/8bb68627117ddf7c51008b41ee7d6505-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/8da2f523c068472e5d776a037fbbb5a4-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/53e50e53de1e8da7b54b72027692d47d-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/e54c543539073580e650a4f66b95cdae-cc_ft_768.webp",
+      ],
+      "5327 Monterey Pl, Kelseyville, CA 95451": [
+        "https://photos.zillowstatic.com/fp/cc0a38e826b929644573fa65cb8123e4-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/346874f02dfdaa901aabe6ed7e6b4a44-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/2e35b789b3629d0fb17479c1ca7dfa4c-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/038c3d19db8b1e06a762d7504f40228e-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/63486497b7f5260f059abf46cbf3d886-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/f9655fc290d546107d3a2cceed8e1152-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/4e478363cba4296ce1b82afd8f3f8cfe-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/4e478363cba4296ce1b82afd8f3f8cfe-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/f72be7144c06e7cf82932eea63f2a841-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/3d6f1ee621ac6fab55217c21e4cf05bc-cc_ft_384.webp",
+      ],
+      "5341 Monterey Pl, Kelseyville, CA 95451": [
+        "https://photos.zillowstatic.com/fp/b6b86be607ab3cb6cc114ffd9ecb4780-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/5800b75b1be4b65155999ab0fcc35ca1-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/3f1a1ccc5cf1ddae98f47e92d3fac9eb-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/3a53c11ce2d73d25f8c883bd02c3c1bc-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/a569c054455e4f112d663cc89a9da2a5-cc_ft_384.webp",
+      ],
+      "5355 Monterey Pl, Kelseyville, CA 95451": [
+        "https://photos.zillowstatic.com/fp/43dc01ac1510448c3ec3a7744b253820-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/291fbcb59f6fb116554bb6305a9de02e-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/514d8feab64564c18082313c04f2e0db-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/0f5f09511d782c51dd6c5bb0159833fd-cc_ft_768.webp",
+      ],
+      "5369 Monterey Pl, Kelseyville, CA 95451":[
+        "https://photos.zillowstatic.com/fp/f7ebad356912cfb05b936abaa21ab136-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/8fd2d39e316ce971825050714ca85d01-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/0b511bb7cbb8945bfe42a8fe471af1d7-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/512780cd87f0987dbcfe172327eaf227-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/7be90e9d3112dddeef50597a85052265-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/3ba9ba3eb64a8f55a704e0f4bd6174eb-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/811f7963533e7547fcc1298540de4b92-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/238b6c4f50dd6a5d8e799d4e58489745-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/2eb0521de123b38766a80ef7ab890d0a-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/10654de39521230cf554000be6b80b04-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/951fd7db98962d1a13c2fcc09cbd771d-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/d58268b492e59b1704a9ec1ebeba5299-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/03b15cbc3c1529544b9fd97654dffd5d-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/ccbf084c52217a2eee2908f63fbacd0a-cc_ft_768.webp",
+      ],
+      "10858 Northslope Dr, Kelseyville, CA 95451": [
+        "https://photos.zillowstatic.com/fp/9383bf6f5499a7abc20e4bc2f5976dc0-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/d0139c81a7e7053edb4e64f50d11fec6-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/cbf1c8cd1fa754c51737b990b23874b4-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/dc00c7648dfe8e5c2fe019b907006b80-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/4969479416b89dda3262ded7c4045e58-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/4969479416b89dda3262ded7c4045e58-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/09e1020d2bc071f06d126d64bcace543-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/4ddfa3703b8a5c7d6eb834edd71cb07d-cc_ft_768.webp",
+      ],
+      "10894 Northslope Dr, Kelseyville, CA 95451": [
+        "https://photos.zillowstatic.com/fp/e86a66b5bf89fa718223207b18ce28b1-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/d8705b622aeaddf53467eaf788ec4f10-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/18ce3ada1d6b3bf4c229a0a082ab6239-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/0f5f09511d782c51dd6c5bb0159833fd-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/0f5f09511d782c51dd6c5bb0159833fd-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/a569c054455e4f112d663cc89a9da2a5-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/9ca806ba11d54d9cbc736e9fca3fbb56-cc_ft_768.webp",
+      ],
+      "10898 Northslope Dr, Kelseyville, CA 95451": [
+        "https://photos.zillowstatic.com/fp/c844e34ef25b0eb87c226c63ea289b5e-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/88a9d908af58ea4fb73409c2eece3546-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/79c5f86206f38a519420741751618daf-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/4cfd87abc4aa1c5591a96e37a2b249de-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/37de318c96d15f1ed1778140bdd50f86-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/37de318c96d15f1ed1778140bdd50f86-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/328bf516899e6c28c2977e95ef8fd239-cc_ft_384.webp"
+      ],
+"9960 Point Lakeview Rd, Kelseyville, CA 95451": [
+        "https://photos.zillowstatic.com/fp/55ee09f753c880637ec7952e00880a1f-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/7917930a5cd8733591d8e6816ef8b9c2-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/72ae316727e258d40d685cd8c1bb1913-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/c9bb53caf5eae6d8fb67244081dc53bc-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/a8df6f1f7c094bb933dca5b6e8634541-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/a8df6f1f7c094bb933dca5b6e8634541-cc_ft_384.webp"
+      ],
+"9815 Sequoia Rd, Kelseyville, CA 95451": [
+        "https://photos.zillowstatic.com/fp/9dc441eac373f3589fa25973054d5524-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/4fdc6cf34699ae79ac0467884081a191-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/165551e044687fbc9d7bf2a8c6545e6d-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/4797042b51339eb24f41c13777026d53-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/4797042b51339eb24f41c13777026d53-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/4043fe92b7a17d6c46de04e1b41f403a-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/a9770dbd37d0dff3ca3c5b1da3751eb3-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/96e979edef3453bd061588556d67bf1c-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/da2f912df089ecdf8de2ae77591e98a0-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/064165067e0e90d0ada9138d6a0aa581-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/80a7e1d7fff6e0ee49beb909d938e22d-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/a5913f8a3dde314fc74855f36110b249-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/401760176121f2fee233459dfacd076d-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/44d81d9bb11f312ea446a7be1ba17fa5-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/402e3dc83bcf00bec273a56ba49409ab-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/ed6059203f2ba5b56716d5ae71867a89-cc_ft_768.webp"
+      ],
+"10860 Skyview Dr, Kelseyville, CA 95451": [
+        "https://photos.zillowstatic.com/fp/e6e55f378963b752919ca847a3cb49a1-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/236ed05bbca51ae0a2212059c104df77-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/72a9470859680ada9f9f9274d42ed8be-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/e4f3790cd942c4dddcc47e197c660087-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/7cfbf646e76a2196dd1b8481f9b7ebf2-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/e4cde0b7f44e2aca4524b458babfb3d8-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/69ab7b1f84f5e281d2b4d6af0ce0b073-cc_ft_768.webp"
+      ],
+"10691 Sunset Ridge Dr, Kelseyville, CA 95451": [
+        "https://photos.zillowstatic.com/fp/75882114ec2788514a6a286e5dba8f15-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/9f9884a6a027517c92f3093b96e65c85-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/0f5f09511d782c51dd6c5bb0159833fd-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/02cbc173b665a2d34337ac8dc6ddfc50-cc_ft_768.webp"
+      ],
+"9719 Tenaya Way, Kelseyville, CA 95451": [
+        "https://photos.zillowstatic.com/fp/c426f8088a5a1fdbe237925278671560-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/a0ea44dab1118cc6a150ff13935644fc-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/e53723c721d1d48b161f7311bdd940ee-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/4a5776ccd8ddff98edeae6b20ebc8e67-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/3becf2364d8818e051d7a50e77e84ce3-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/3becf2364d8818e051d7a50e77e84ce3-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/18ce3ada1d6b3bf4c229a0a082ab6239-cc_ft_768.webp"
+      ],
+"5248 Tenino Way, Kelseyville, CA 95451": [
+        "https://photos.zillowstatic.com/fp/13e0237b272afb9c97342ea174eb067b-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/46e42dc57cd74f0a3d8b1f505de99637-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/2e6cfc8aab3b29a897846da41dd6a791-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/297858b52da0ad230ea5375c6b1d2e9a-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/393edab59f7aea03dc794a5613adbf49-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/9be44185ff37c480bb7c3f3ad7987942-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/b25b6c43747fa53eb9b8438e0a6d388d-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/a621890d68cf93ae1c677fdf321758fd-cc_ft_384.webp"
+      ],
+"5299 Tenino Way, Kelseyville, CA 95451": [
+        "https://photos.zillowstatic.com/fp/fc49fc740d49e7b080f6a54307516b55-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/6ebcd006886ee90fafb5f99a606a3422-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/fa0d6ebc6ae6388846911cd11859111b-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/6ab96bdf8958ecded8226b6bd51df1e6-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/cc81b7a51cd5f042b2e4349dceb8be93-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/af6327a9a1cae41f1bdf2b3ba386bcff-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/8ef577c1dbbab6838f409057fe9f9b50-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/a543192dcf8f516d1a96eded9459f959-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/68523f6c93a8626e38afd05b8a73047e-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/c32d59ad50c8abc5fe7b6109d2cc4160-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/4e95065295d034d2c520f5d336ab4241-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/9110b126ce7b15ecf36517208efe1aec-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/f8686168e4842f98d8d54bf713f7f1ca-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/435c0e520ac81f4e257e1c1f36eef317-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/8500c66d264eeeeb535e4c94b89b3971-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/10f1d4129f5877e046cf3d452aa9c6eb-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/b05862e9432893ba3ee069c8b8a49548-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/7df1ab1907d27975fd5d63362c0ce546-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/e459546de33faa5bbb7e97fa58e549c8-cc_ft_768.webp"
+      ],
+"6895 Echo Dr, Kelseyville, CA 95451": [
+        "https://photos.zillowstatic.com/fp/ec16b02c6883b50c88985cf911df6f3e-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/47e36130edd0435846c0ba6fcde94a0e-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/df88f72fa2f66f6cd8751588f634b303-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/6a652be7a73c05fc54ae832a1e51aa6b-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/4e227507568409ebef298813a52c7c1c-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/5555c5dc24aceda25b906d4b17194335-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/244ffd4ac8b7553807f297e9f0e932c6-cc_ft_768.webp"
+      ],
+"3076 Riviera Heights Dr, Kelseyville, CA 95451": [
+        "https://photos.zillowstatic.com/fp/2c535d11d40b10be856987a276b802c2-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/a01bec73dcd7ec8c64c4911f747b90e9-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/a5183e514a43cf781d708807fcc6eccd-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/c1e19b82725eb0a3a1be681e005b5e50-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/5ddc09cb3a0b88093b71d8fb60b46529-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/08c822f8c6981d43f99a751acf906736-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/22a2a139909a1b02c09cf1a3c5a9a74f-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/d9c764cb8c9d048bfdc90e6184dae32b-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/e1220552f7594f44158e2ac27e3d2ebb-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/b0d8b8dfcbfbfde47b8bcc68bf2530af-cc_ft_384.webp"
+      ],
+"3080 Riviera Heights Dr, Kelseyville, CA 95451": [
+        "https://photos.zillowstatic.com/fp/d64b56f4727dbba6b187ab4cb32ae282-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/ba443b67fe920334bbca25a7fde69abc-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/b987dbf348bd856556c0bdd4851e45a2-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/b51c467714411f40051ce3e30752132b-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/043bc503be9b825218d2386e514bb856-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/da82627456762c30c0c5e5d3e6411932-cc_ft_768.webp"
+      ],
+"3091 Riviera Heights Dr, Kelseyville, CA 95451": [
+        "https://photos.zillowstatic.com/fp/cf053f5d8aa41beea2f2bf70c9a8dfd0-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/4d9cc57cf081851b82de4d4993984670-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/e6ad5fa02c1b630d00b16f5002a471ac-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/4838de92e3a105dfdf26e43775d4b168-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/0da52dddbc18e68dfa93fa2fc4217113-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/127e7d3dadaaa1bcfe5697255ba2790d-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/6f1d962315517651aa8e31b27f5f9822-cc_ft_384.webp"
+      ],
+"12991 San Joaquin Ave, Clearlake, CA 95422": [
+        "https://photos.zillowstatic.com/fp/b45cd260638c81768173c650d8b1821f-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/421465d359b3e2cbdacfb0e7ac3be11c-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/c56b484b4f214f4f7684dff67357c024-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/d0ed5439d6a302f2104802aae99d5366-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/1e514f8fc6c66c5ae7cbd16111e9274d-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/1e514f8fc6c66c5ae7cbd16111e9274d-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/c4a1cb944814cbe1e5e1f042a7e32e98-cc_ft_384.webp",
+        "https://photos.zillowstatic.com/fp/16e13004719807af7b59257c4b5223fe-cc_ft_768.webp",
+        "https://photos.zillowstatic.com/fp/5e33c390ad161ad0488104a420bb7067-cc_ft_384.webp"
+      ]
+    };
 
-  <div class="card budget riviera">
-    <div class="carousel">
-      <img src="https://photos.zillowstatic.com/fp/fc49fc740d49e7b080f6a54307516b55-cc_ft_768.webp" alt="9889 Emerald Drive" class="active">
-      <img src="https://photos.zillowstatic.com/fp/6ebcd006886ee90fafb5f99a606a3422-cc_ft_384.webp" alt="9889 Emerald Drive">
-      <img src="https://photos.zillowstatic.com/fp/fa0d6ebc6ae6388846911cd11859111b-cc_ft_384.webp" alt="9889 Emerald Drive">
-      <img src="https://photos.zillowstatic.com/fp/6ab96bdf8958ecded8226b6bd51df1e6-cc_ft_384.webp" alt="9889 Emerald Drive">
-      <img src="https://photos.zillowstatic.com/fp/af6327a9a1cae41f1bdf2b3ba386bcff-cc_ft_768.webp" alt="9889 Emerald Drive">
-      <div class="dots"></div>
-    </div>
-    <div class="card-content">
-      <h3>5299 Tenino Way, Kelseyville, CA 95451</h3>
-      <p class="price">$8,888</p>
-      <div class="tags">
-        <span class="tag">Kelseyville Riviera</span>
-        <span class="tag">Budget</span>
-        <span class="tag">0.27 Acres</span>
-        <a href="https://wa.me/17864935842?text=I%20am%20interested%20in%205299%20Tenino%20Way%2C%20Kelseyville%2C%20CA%2095451" 
-   target="_blank" 
-   class="whatsapp-btn">
-  <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" 
-       alt="WhatsApp" 
-       style="width:36px;height:36px;">
-</a>
-      </div>
-    </div>
-  </div>
+    /* NOTE:
+       - For readability in this browser message I kept the providedImages entries intact for the early addresses.
+       - The full object above is long (the message included many image lists).
+       - The code below will check for providedImages[address].
+       - If you pasted the full providedImages map as shown above, it will use those URLs.
+       - If some addresses are missing from providedImages, the script fills up to 5 placeholders automatically.
+    */
 
-  <div class="card premium riviera">
-    <div class="carousel">
-      <img src="https://photos.zillowstatic.com/fp/1cf681cad56dbe72b0ff630e24ee4b90-cc_ft_384.webp" alt="8960 Fairway Dr" class="active">
-      <img src="https://photos.zillowstatic.com/fp/316093229ef5e28745090e4018917bb8-cc_ft_384.webp" alt="8960 Fairway Dr">
-      <img src="https://photos.zillowstatic.com/fp/7e87014e4e05734321e94dbb5c0ff999-cc_ft_384.webp" alt="8960 Fairway Dr">
-      <img src="https://photos.zillowstatic.com/fp/b53998bec0530848261a91cfcb0401f7-cc_ft_384.webp" alt="8960 Fairway Dr">
-      <img src="https://photos.zillowstatic.com/fp/e8123d0c71fb68593bf9e8e8f6ecc428-cc_ft_768.webp" alt="8960 Fairway Dr">
-      <div class="dots"></div>
-    </div>
-    <div class="card-content">
-      <h3>8960 Fairway Dr, Kelseyville, CA 95451</h3>
-      <p class="price">$29,888</p>
-      <div class="tags">
-        <span class="tag">Kelseyville Riviera</span>
-        <span class="tag">Premium</span>
-        <span class="tag">10,289 sqft</span>
-        <a href="https://wa.me/17864935842?text=I%20am%20interested%20in%208960%20Fairway%20Dr%2C%20Kelseyville%2C%20CA%2095451" 
-   target="_blank" 
-   class="whatsapp-btn">
-  <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" 
-       alt="WhatsApp" 
-       style="width:36px;height:36px;">
-</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="card budget riviera">
-    <div class="carousel">
-      <img src="https://photos.zillowstatic.com/fp/798c1a33b5f796f3c99b01bb80b84f04-cc_ft_768.webp" alt="9526 Fairway Drive" class="active">
-      <img src="https://photos.zillowstatic.com/fp/5ce7d90f53eb656c634caeb1c8d06700-cc_ft_384.webp" alt="9526 Fairway Drive">
-      <img src="https://photos.zillowstatic.com/fp/818a619c45f33b07a1aecbe57cf8d4eb-cc_ft_384.webp" alt="9526 Fairway Drive">
-      <img src="https://photos.zillowstatic.com/fp/054d5242458d1af53cc62402b7a374bd-cc_ft_384.webp" alt="9526 Fairway Drive">
-      <img src="https://photos.zillowstatic.com/fp/5e9d8c9b060f33685dec1d7ebba5da23-cc_ft_384.webp" alt="9526 Fairway Drive">
-      <div class="dots"></div>
-    </div>
-    <div class="card-content">
-      <h3>9526 Fairway Dr, Kelseyville, CA 95451</h3>
-      <p class="price">$14,888</p>
-      <div class="tags">
-        <span class="tag">Kelseyville Riviera</span>
-        <span class="tag">Budget</span>
-        <span class="tag">9,583</span>
-        <a href="https://wa.me/17864935842?text=I%20am%20interested%20in%209526%20Fairway%20Dr%2C%20Kelseyville%2C%20CA%2095451" 
-   target="_blank" 
-   class="whatsapp-btn">
-  <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" 
-       alt="WhatsApp" 
-       style="width:36px;height:36px;">
-</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="card mid riviera">
-    <div class="carousel">
-      <img src="https://photos.zillowstatic.com/fp/eb5af28d099463f95fadbe832bc33b9f-cc_ft_768.webp" alt="10660 Harbor Rd" class="active">
-      <img src="https://photos.zillowstatic.com/fp/34030e6b8c9d0840aea3c47d57ebfc59-cc_ft_384.webp" alt="10660 Harbor Rd">
-      <img src="https://photos.zillowstatic.com/fp/955c511ca8b023e6ee5814960e16bec0-cc_ft_384.webp" alt="10660 Harbor Rd">
-      <img src="https://photos.zillowstatic.com/fp/955c511ca8b023e6ee5814960e16bec0-cc_ft_768.webp" alt="10660 Harbor Rd">
-      <img src="https://photos.zillowstatic.com/fp/a84b0f6d601c4edf10f9aafe10fc175d-cc_ft_384.webp" alt="10660 Harbor Rd">
-      <div class="dots"></div>
-    </div>
-    <div class="card-content">
-      <h3>10660 Harbor Rd, Kelseyville, CA 95451</h3>
-      <p class="price">$21,888</p>
-      <div class="tags">
-        <span class="tag">Kelseyville Riviera</span>
-        <span class="tag">Mid-Tier</span>
-        <span class="tag">0.28Acres</span>
-        <a href="https://wa.me/17864935842?text=I%20am%20interested%20in%2010660%20Harbor%20Rd%2C%20Kelseyville%2C%20CA%2095451" 
-   target="_blank" 
-   class="whatsapp-btn">
-  <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" 
-       alt="WhatsApp" 
-       style="width:36px;height:36px;">
-</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="card budget riviera">
-    <div class="carousel">
-      <img src="https://maps.googleapis.com/maps/api/streetview?location=4587+Hawaina+Way%2C+Kelseyville%2C+CA+95451&size=768x576&key=AIzaSyARFMLB1na-BBWf7_R3-5YOQQaHqEJf6RQ&source=outdoor&&signature=I8vAxkyu8PvUF0IVwTHx0FQsqMY=" alt="4587 Hawaina Way" class="active">
-      <div class="dots"></div>
-    </div>
-    <div class="card-content">
-      <h3>4587 Hawaina Way, Kelseyville, CA 95451</h3>
-      <p class="price">$14,888</p>
-      <div class="tags">
-        <span class="tag">Kelseyville Riviera</span>
-        <span class="tag">Budget</span>
-        <span class="tag">7,405.2</span>
-        <a href="https://wa.me/17864935842?text=I%20am%20interested%20in%204587%20Hawaina%20Way%2C%20Kelseyville%2C%20CA%2095451" 
-   target="_blank" 
-   class="whatsapp-btn">
-  <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" 
-       alt="WhatsApp" 
-       style="width:36px;height:36px;">
-</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="card mid riviera">
-    <div class="carousel">
-      <img src="https://photos.zillowstatic.com/fp/bc6962146ad9580b1da4631eeab07b32-cc_ft_768.webp" alt="4625 Hawaina Way" class="active">
-      <img src="https://photos.zillowstatic.com/fp/cc09086f5bf927f4f53b7e1cd5221e73-cc_ft_384.webp" alt="4625 Hawaina Way">
-            <img src="https://photos.zillowstatic.com/fp/cc541fa7c34ea4d4feec68e2e795e54c-cc_ft_384.webp" alt="4625 Hawaina Way">
-      <img src="https://photos.zillowstatic.com/fp/29a707587dffcee7aed1dfb071b84826-cc_ft_384.webp" alt="4625 Hawaina Way">
-      <div class="dots"></div>
-    </div>
-    <div class="card-content">
-      <h3>4835 Hawaina Way, Kelseyville, CA 95451</h3>
-      <p class="price">$14,888</p>
-      <div class="tags">
-        <span class="tag">Kelseyville Riviera</span>
-        <span class="tag">Mid-Tier</span>
-                <span class="tag">10,149 sqft</span>
-                <a href="https://wa.me/17864935842?text=I%20am%20interested%20in%204835%20Hawaina%20Way%2C%20Kelseyville%2C%20CA%2095451" 
-   target="_blank" 
-   class="whatsapp-btn">
-  <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" 
-       alt="WhatsApp" 
-       style="width:36px;height:36px;">
-</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="card premium riviera">
-    <div class="carousel">
-      <img src="https://photos.zillowstatic.com/fp/ad874da281fd887d3f63813d97ce0bc1-cc_ft_384.webp" alt="4660 Hawaina Way" class="active">
-      <img src="https://photos.zillowstatic.com/fp/454ba76ef0701a4220311d1bffde3f38-cc_ft_384.webp" alt="4660 Hawaina Way">
-            <img src="https://photos.zillowstatic.com/fp/a2645259b2644b197df5392d541b154b-cc_ft_768.webp" alt="4660 Hawaina Way">
-      <img src="https://photos.zillowstatic.com/fp/1051176eb57242954b19519aee4e0003-cc_ft_384.webp " alt="4660 Hawaina Way">
-      <img src="https://photos.zillowstatic.com/fp/993e2e978f1d006c8e1944450fe1ad6a-cc_ft_768.webp" alt="4660 Hawaina Way">
-      <div class="dots"></div>
-    </div>
-    <div class="card-content">
-      <h3>4660 Hawaina Way, Kelseyville, CA 95451</h3>
-      <p class="price">$35,888</p>
-      <div class="tags">
-        <span class="tag">Kelseyville Riviera</span>
-        <span class="tag">Premium</span>
-                <span class="tag">8,276 sqft</span>
-                <a href="https://wa.me/17864935842?text=I%20am%20interested%20in%204660%20Hawaina%20Way%2C%20Kelseyville%2C%20CA%2095451" 
-   target="_blank" 
-   class="whatsapp-btn">
-  <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" 
-       alt="WhatsApp" 
-       style="width:36px;height:36px;">
-</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="card mid riviera">
-    <div class="carousel">
-      <img src="https://photos.zillowstatic.com/fp/2a510f3abab2c0f4a9c96af968384b43-cc_ft_768.webp" alt="4696 Hawaina Way" class="active">
-      <img src="https://photos.zillowstatic.com/fp/0298ca1d564f9a0b08cce97ea8f60b0c-cc_ft_768.webp" alt="4696 Hawaina Way">
-      <img src="https://photos.zillowstatic.com/fp/14bd71a29cf503eac16552f74c9ead9e-cc_ft_384.webp" alt="4696 Hawaina Way">
-      <img src="https://photos.zillowstatic.com/fp/d2c8660777b9226b8ec9b38fbffaeca6-cc_ft_384.webp" alt="4696 Hawaina Way">
-      <img src="https://photos.zillowstatic.com/fp/4da9b6ac66539ffac2f7910b191f7464-cc_ft_768.webp" alt="4696 Hawaina Way">
-      <div class="dots"></div>
-    </div>
-    <div class="card-content">
-      <h3>4696 Hawaina Way, Kelseyville, CA 95451</h3>
-      <p class="price">$16,888</p>
-      <div class="tags">
-        <span class="tag">Kelseyville Riviera</span>
-        <span class="tag">Mid-Tier</span>
-                <span class="tag">7,840 sqft</span>
-                <a href="https://wa.me/17864935842?text=I%20am%20interested%20in%204696%20Hawaina%20Way%2C%20Kelseyville%2C%20CA%2095451" 
-   target="_blank" 
-   class="whatsapp-btn">
-  <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" 
-       alt="WhatsApp" 
-       style="width:36px;height:36px;">
-</a>
-      </div>
-    </div>
-  </div>
-
-
-  <div class="card budget riviera">
-    <div class="carousel">
-      <img src="https://photos.zillowstatic.com/fp/2aeed5001a3cc18367eafb1e826cf19c-cc_ft_768.webp" alt="4840 Cascade Way" class="active">
-      <img src="https://photos.zillowstatic.com/fp/e8da2554c4e4f8534fd0dde55e8322cd-cc_ft_384.webp" alt="4840 Cascade Way">
-            <img src="https://photos.zillowstatic.com/fp/45b1f04a747af48d9df08b0ba7326cdd-cc_ft_384.webp" alt="4840 Cascade Way">
-      <img src="https://photos.zillowstatic.com/fp/55357f5ab60e82d34694cedf239f4476-cc_ft_384.webp" alt="4840 Cascade Way">
-      <img src="https://photos.zillowstatic.com/fp/45b1f04a747af48d9df08b0ba7326cdd-cc_ft_384.webp" alt="4840 Cascade Way">
-      <div class="dots"></div>
-    </div>
-    <div class="card-content">
-      <h3>4840 Cascade Way, Kelseyville, CA 95451</h3>
-      <p class="price">$11,888</p>
-      <div class="tags">
-        <span class="tag">Kelseyville Riviera</span>
-        <span class="tag">Budget</span>
-        <span class="tag">0.27 Acres</span>
-        <a href="https://wa.me/17864935842?text=I%20am%20interested%20in%204840%20Cascade%20Way%2C%20Kelseyville%2C%20CA%2095451" 
-   target="_blank" 
-   class="whatsapp-btn">
-  <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" 
-       alt="WhatsApp" 
-       style="width:36px;height:36px;">
-</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="card mid riviera">
-    <div class="carousel">
-      <img src="https://photos.zillowstatic.com/fp/3cb2dc35084d87ab7624cdd8bb68ec8e-cc_ft_768.webp" alt="4910 Hawaina Way/10255 HokHasHa Ln" class="active">
-      <img src="https://photos.zillowstatic.com/fp/f9f58aa723e8f5ec98d8b2f8f340b255-cc_ft_384.webp" alt="4910 Hawaina Way/10255 HokHasHa Ln">
-            <img src="https://photos.zillowstatic.com/fp/b5cd32c6967f8a5f438b94ff2b2862a3-cc_ft_384.webp" alt="4910 Hawaina Way/10255 HokHasHa Ln">
-      <img src="https://photos.zillowstatic.com/fp/f3bfe2d1f499201999eb1fa32f890667-cc_ft_768.webp " alt="4910 Hawaina Way/10255 HokHasHa Ln">
-      <img src="https://photos.zillowstatic.com/fp/4d066e08c652514d2fb96156b6dd547d-cc_ft_384.webp" alt="4910 Hawaina Way/10255 HokHasHa Ln">
-      <div class="dots"></div>
-    </div>
-    <div class="card-content">
-      <h3>4910 Hawaina Way, Kelseyville, CA 95451</h3>
-      <p class="price">$15,888</p>
-      <div class="tags">
-        <span class="tag">Kelseyville Riviera</span>
-        <span class="tag">Mid-Tier</span>
-                <span class="tag">8,276 sqft</span>
-                <a href="https://wa.me/17864935842?text=I%20am%20interested%20in%204910%20Hawaina%20Way%2C%20Kelseyville%2C%20CA%2095451" 
-   target="_blank" 
-   class="whatsapp-btn">
-  <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" 
-       alt="WhatsApp" 
-       style="width:36px;height:36px;">
-</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="card mid riviera">
-    <div class="carousel">
-      <img src="https://photos.zillowstatic.com/fp/a3343577ca4146a2abc6d7006f546090-cc_ft_384.webp" alt="9155 Hoopa Drive" class="active">
-      <img src="https://photos.zillowstatic.com/fp/cf1a38dc9e3a36b89d049449dfed846b-cc_ft_768.webp" alt="9155 Hoopa Drive">
-     <img src="https://photos.zillowstatic.com/fp/77bc7df2fdd29c0f69d6a67e096c63f4-cc_ft_384.webp" alt="9155 Hoopa Drive">
-      <div class="dots"></div>
-    </div>
-    <div class="card-content">
-      <h3>9155 Hoopa Dr, Kelseyville, CA 95451</h3>
-      <p class="price">$15,888</p>
-      <div class="tags">
-        <span class="tag">Kelseyville Riviera</span>
-        <span class="tag">Mid-Tier</span>
-                <span class="tag">5,227 sqft</span>
-                <a href="https://wa.me/17864935842?text=I%20am%20interested%20in%209155%20Hoopa%20Dr%2C%20Kelseyville%2C%20CA%2095451" 
-   target="_blank" 
-   class="whatsapp-btn">
-  <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" 
-       alt="WhatsApp" 
-       style="width:36px;height:36px;">
-</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="card budget riviera">
-    <div class="carousel">
-      <img src="https://photos.zillowstatic.com/fp/a421b70eea27b74b29b40fc61167f78c-cc_ft_384.webp" alt="4672 Iroquois Tr" class="active">
-      <img src="https://photos.zillowstatic.com/fp/14f944c782bd1e4463996c02fb0aabc7-cc_ft_384.webp" alt="4672 Iroquois Tr">
-            <img src="https://photos.zillowstatic.com/fp/7769271e6ba549386f3897d7d6022d10-cc_ft_768.webp" alt="4672 Iroquois Tr">
-      <img src="https://photos.zillowstatic.com/fp/aef18f662bfc73b0bd06e68ca492f864-cc_ft_384.webp" alt="4672 Iroquois Tr">
-      <img src="https://photos.zillowstatic.com/fp/f61cad33f266dddab55d8e4d0c019e99-cc_ft_768.webp" alt="4672 Iroquois Tr">
-      <div class="dots"></div>
-    </div>
-    <div class="card-content">
-      <h3>4672 Iroquois Trl, Kelseyville, CA 95451</h3>
-      <p class="price">$13,888</p>
-      <div class="tags">
-        <span class="tag">Kelseyville Riviera</span>
-        <span class="tag">Budget</span>
-                <span class="tag">0.37 Acres</span>
-                <a href="https://wa.me/17864935842?text=I%20am%20interested%20in%204672%20Iroquois%20Trl%2C%20Kelseyville%2C%20CA%2095451" 
-   target="_blank" 
-   class="whatsapp-btn">
-  <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" 
-       alt="WhatsApp" 
-       style="width:36px;height:36px;">
-</a>
-      </div>
-    </div>
-  </div>
-
-
-  <div class="card budget riviera">
-    <div class="carousel">
-      <img src="https://photos.zillowstatic.com/fp/d1d7e84026d33889d9a0d40234f1da32-cc_ft_768.webp" alt="4883 Iroquois Tr" class="active">
-      <img src="https://photos.zillowstatic.com/fp/198f0723b0cbcbcc2cbdd6d9bc160c16-cc_ft_768.webp" alt="4883 Iroquois Tr">
-            <img src="https://photos.zillowstatic.com/fp/ce7a2abad0a55d8668fe408a78ec4f52-cc_ft_768.webp" alt="4883 Iroquois Tr">
-      <div class="dots"></div>
-    </div>
-    <div class="card-content">
-      <h3>4883 Iroquois Tr</h3>
-      <p class="price">$12,888</p>
-      <div class="tags">
-        <span class="tag">Kelseyville Riviera</span>
-        <span class="tag">Budget</span>
-                <span class="tag">7,836 sqft</span>
-        <a href="https://wa.me/17864935842?text=I%20am%20interested%20in%204883%20Iroquois%20Trl%2C%20Kelseyville%2C%20CA%2095451" 
-   target="_blank" 
-   class="whatsapp-btn">
-  <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" 
-       alt="WhatsApp" 
-       style="width:36px;height:36px;">
-</a>
-
-      </div>
-    </div>
-  </div>
-
-  <div class="card budget riviera">
-    <div class="carousel">
-      <img src="https://photos.zillowstatic.com/fp/dd95f1629e094c2032268b43d50c05b7-cc_ft_384.webp" alt="4917 Iroquois Tr" class="active">
-      <img src="https://photos.zillowstatic.com/fp/6fe3619e14d1b6a3b8c32909e4b676fa-cc_ft_384.webp" alt="4917 Iroquois Tr">
-            <img src="https://photos.zillowstatic.com/fp/dd95f1629e094c2032268b43d50c05b7-cc_ft_768.webp" alt="4917 Iroquois Tr">
-      <img src="https://photos.zillowstatic.com/fp/814c12470aeaf734318024e412d751b6-cc_ft_384.webp" alt="4917 Iroquois Tr">
-      <img src="https://photos.zillowstatic.com/fp/a5c7243e0dbc8c5c8c39e0e812d6be3e-cc_ft_384.webp" alt="4917 Iroquois Tr">
-      <div class="dots"></div>
-    </div>
-    <div class="card-content">
-      <h3>4917 Iroquois Trl, Kelseyville, CA 95451</h3>
-      <p class="price">$14,888</p>
-      <div class="tags">
-        <span class="tag">Kelseyville Riviera</span>
-        <span class="tag">Budget</span>
-                <span class="tag">10,454 sqft</span>
-                <a href="https://wa.me/17864935842?text=I%20am%20interested%20in%204917%20Iroquois%20Trl%2C%20Kelseyville%2C%20CA%2095451" 
-   target="_blank" 
-   class="whatsapp-btn">
-  <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" 
-       alt="WhatsApp" 
-       style="width:36px;height:36px;">
-</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="card budget riviera">
-    <div class="carousel">
-      <img src="https://photos.zillowstatic.com/fp/0c0eb5b86a95beab3448f585d793dd1f-cc_ft_768.webp" alt="4810 Kah Bel Tr" class="active">
-      <img src="https://photos.zillowstatic.com/fp/e9231992bf58015335be7dc0cefe3e70-cc_ft_384.webp" alt="4810 Kah Bel Tr">
-            <img src="https://photos.zillowstatic.com/fp/b0996cdf82af1552a294008fbb5dd9b4-cc_ft_384.webp" alt="4810 Kah Bel Tr">
-      <img src="https://photos.zillowstatic.com/fp/ab2b76102b8d56761cbe82ecc05841e8-cc_ft_384.webp" alt="4810 Kah Bel Tr">
-      <img src="https://photos.zillowstatic.com/fp/44f3e39d186be71007cd1aba02de6339-cc_ft_384.webp" alt="4810 Kah Bel Tr">
-      <div class="dots"></div>
-    </div>
-    <div class="card-content">
-      <h3>4810 Kah Bel Trl, Kelseyville, CA 95451</h3>
-      <p class="price">$11,888</p>
-      <div class="tags">
-        <span class="tag">Kelseyville Riviera</span>
-        <span class="tag">Budget</span>
-                <span class="tag">0.28 Acres</span>
-                <a href="https://wa.me/17864935842?text=I%20am%20interested%20in%204810%20Kah%20Bel%20Trl%2C%20Kelseyville%2C%20CA%2095451" 
-   target="_blank" 
-   class="whatsapp-btn">
-  <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" 
-       alt="WhatsApp" 
-       style="width:36px;height:36px;">
-</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="card budget riviera">
-    <div class="carousel">
-      <img src="https://photos.zillowstatic.com/fp/e3eca46412ea979edf40012809c4c209-cc_ft_768.webp" alt="4622 Kaweah Rd" class="active">
-      <img src="https://photos.zillowstatic.com/fp/6db426195af54f34c86cc18874c8f232-cc_ft_384.webp" alt="4622 Kaweah Rd">
-            <img src="https://photos.zillowstatic.com/fp/e3ce76eb1cd3674986d9a268ca967f71-cc_ft_384.webp" alt="4622 Kaweah Rd">
-      <img src="https://photos.zillowstatic.com/fp/cc4986a67042d082717fb0a967e75ec1-cc_ft_768.webp" alt="4622 Kaweah Rd">
-      <img src="https://photos.zillowstatic.com/fp/bb8dc4de8c79940a4c6bdbe0a551cc15-cc_ft_384.webp" alt="4622 Kaweah Rd">
-      <div class="dots"></div>
-    </div>
-    <div class="card-content">
-      <h3>4622 Kaweah Rd, Kelseyville, CA 95451</h3>
-      <p class="price">$12,888</p>
-      <div class="tags">
-        <span class="tag">Kelseyville Riviera</span>
-        <span class="tag">Budget</span>
-        <span class="tag">8,712 sqft</span>
-        <a href="https://wa.me/17864935842?text=I%20am%20interested%20in%204622%20Kaweah%20Rd%2C%20Kelseyville%2C%20CA%2095451" 
-   target="_blank" 
-   class="whatsapp-btn">
-  <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" 
-       alt="WhatsApp" 
-       style="width:36px;height:36px;">
-</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="card budget riviera">
-    <div class="carousel">
-      <img src="https://photos.zillowstatic.com/fp/eeee49082e88f928e15ab63d9220c86e-cc_ft_768.webp" alt="4706 Kaweah Rd" class="active">
-      <img src="https://photos.zillowstatic.com/fp/3f51d469c7bf6d3d5e3bc559c16e6f21-cc_ft_384.webp" alt="4706 Kaweah Rd">
-            <img src="https://photos.zillowstatic.com/fp/318fa56539a0839e216bcb405fc7100d-cc_ft_384.webp" alt="4706 Kaweah Rd">
-      <img src="https://photos.zillowstatic.com/fp/8ba6485e2a8a2f51cccca4b69d4fc39f-cc_ft_384.webp" alt="4706 Kaweah Rd">
-      <img src="https://photos.zillowstatic.com/fp/318fa56539a0839e216bcb405fc7100d-cc_ft_384.webp" alt="4706 Kaweah Rd">
-      <div class="dots"></div>
-    </div>
-    <div class="card-content">
-      <h3>4706 Kaweah Rd, Kelseyville, CA 95451</h3>
-      <p class="price">$12,888</p>
-      <div class="tags">
-        <span class="tag">Kelseyville Riviera</span>
-        <span class="tag">Budget</span>
-                <span class="tag">0.3 Acres</span>
-                <a href="https://wa.me/17864935842?text=I%20am%20interested%20in%204706%20Kaweah%20Rd%2C%20Kelseyville%2C%20CA%2095451" 
-   target="_blank" 
-   class="whatsapp-btn">
-  <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" 
-       alt="WhatsApp" 
-       style="width:36px;height:36px;">
-</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="card premium riviera">
-    <div class="carousel">
-      <img src="https://photos.zillowstatic.com/fp/bd086eaff5bb510ec55399ad787a62b6-cc_ft_768.webp" alt="4995 Klamath Rd" class="active">
-      <img src="https://photos.zillowstatic.com/fp/c370a008b750ca78cb7a886c6786f7ea-cc_ft_384.webp" alt="4995 Klamath Rd">
-            <img src="https://photos.zillowstatic.com/fp/bab1cb59fe33fd0549ee0429357eb759-cc_ft_384.webp" alt="4995 Klamath Rd">
-      <img src="https://photos.zillowstatic.com/fp/25072b153b6b090ed8ac119b6e94e87e-cc_ft_384.webp" alt="4995 Klamath Rd">
-      <img src="https://photos.zillowstatic.com/fp/b32fd99fbb8273ede8e45c2902cc697a-cc_ft_384.webp" alt="4995 Klamath Rd">
-      <div class="dots"></div>
-    </div>
-    <div class="card-content">
-      <h3>4995 Klamath Rd, Kelseyville, CA 95451</h3>
-      <p class="price">$27,888</p>
-      <div class="tags">
-        <span class="tag">Kelseyville Riviera</span>
-        <span class="tag">Premium</span>
-                <span class="tag">0.63 Acres</span>
-                <a href="https://wa.me/17864935842?text=I%20am%20interested%20in%204995%20Klamath%20Rd%2C%20Kelseyville%2C%20CA%2095451" 
-   target="_blank" 
-   class="whatsapp-btn">
-  <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" 
-       alt="WhatsApp" 
-       style="width:36px;height:36px;">
-</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="card budget riviera">
-    <div class="carousel">
-      <img src="https://photos.zillowstatic.com/fp/cc0a38e826b929644573fa65cb8123e4-cc_ft_768.webp" alt="5313 Monterey Pl" class="active">
-      <img src="https://photos.zillowstatic.com/fp/346874f02dfdaa901aabe6ed7e6b4a44-cc_ft_384.webp" alt="5313 Monterey Pl">
-            <img src="https://photos.zillowstatic.com/fp/038c3d19db8b1e06a762d7504f40228e-cc_ft_384.webp" alt="5313 Monterey Pl">
-      <img src="https://photos.zillowstatic.com/fp/3d6f1ee621ac6fab55217c21e4cf05bc-cc_ft_384.webp" alt="5313 Monterey Pl">
-      <img src="https://photos.zillowstatic.com/fp/4e478363cba4296ce1b82afd8f3f8cfe-cc_ft_768.webp" alt="5313 Monterey Pl">
-      <div class="dots"></div>
-    </div>
-    <div class="card-content">
-      <h3>5327 Monterey Pl, Kelseyville, CA 95451</h3>
-      <p class="price">$14,888 OBO</p>
-      <div class="tags">
-        <span class="tag">Kelseyville Riviera</span>
-        <span class="tag">Budget</span>
-                <span class="tag">0.33 Acres</span>
-                <a href="https://wa.me/17864935842?text=I%20am%20interested%20in%205327%20Monterey%20Pl%2C%20Kelseyville%2C%20CA%2095451" 
-   target="_blank" 
-   class="whatsapp-btn">
-  <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" 
-       alt="WhatsApp" 
-       style="width:36px;height:36px;">
-</a>
-      </div>
-    </div>
-  </div>
-
-
-  <div class="card budget riviera">
-    <div class="carousel">
-      <img src="https://photos.zillowstatic.com/fp/b6b86be607ab3cb6cc114ffd9ecb4780-cc_ft_768.webp" alt="5341 Monterey Pl" class="active">
-      <img src="https://photos.zillowstatic.com/fp/5800b75b1be4b65155999ab0fcc35ca1-cc_ft_384.webp" alt="5341 Monterey Pl">
-            <img src="https://photos.zillowstatic.com/fp/3f1a1ccc5cf1ddae98f47e92d3fac9eb-cc_ft_384.webp" alt="5341 Monterey Pl">
-      <img src="https://photos.zillowstatic.com/fp/3a53c11ce2d73d25f8c883bd02c3c1bc-cc_ft_384.webp" alt="5341 Monterey Pl">
-      <img src="https://photos.zillowstatic.com/fp/f0357d6c595ed61844dd94d3641615c1-cc_ft_384.webp" alt="5341 Monterey Pl">
-      <div class="dots"></div>
-    </div>
-    <div class="card-content">
-      <h3>5341 Monterey Pl, Kelseyville, CA 95451</h3>
-      <p class="price">$13,888</p>
-      <div class="tags">
-        <span class="tag">Kelseyville Riviera</span>
-        <span class="tag">Budget</span>
-                <span class="tag">0.32 Acres</span>
-        <a href="https://wa.me/17864935842?text=I%20am%20interested%20in%205341%20Monterey%20Pl%2C%20Kelseyville%2C%20CA%2095451" 
-   target="_blank" 
-   class="whatsapp-btn">
-  <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" 
-       alt="WhatsApp" 
-       style="width:36px;height:36px;">
-</a>
-
-      </div>
-    </div>
-  </div>
-
-  <div class="card budget riviera">
-    <div class="carousel">
-      <img src="https://photos.zillowstatic.com/fp/4d6ff5093a8d4349ec87966f51fe3fa3-cc_ft_768.webp" alt="5355 Monterey Pl" class="active">
-      <img src="https://photos.zillowstatic.com/fp/43dc01ac1510448c3ec3a7744b253820-cc_ft_384.webp" alt="5355 Monterey Pl">
-            <img src="https://photos.zillowstatic.com/fp/291fbcb59f6fb116554bb6305a9de02e-cc_ft_384.webp" alt="5355 Monterey Pl">
-      <img src="https://photos.zillowstatic.com/fp/514d8feab64564c18082313c04f2e0db-cc_ft_384.webp" alt="5355 Monterey Pl">
-      <div class="dots"></div>
-    </div>
-    <div class="card-content">
-      <h3>5355 Monterey Pl, Kelseyville, CA 95451</h3>
-      <p class="price">$12,888</p>
-      <div class="tags">
-        <span class="tag">Kelseyville Riviera</span>
-        <span class="tag">Budget</span>
-                <span class="tag">0.3 Acres</span>
-                <a href="https://wa.me/17864935842?text=I%20am%20interested%20in%205355%20Monterey%20Pl%2C%20Kelseyville%2C%20CA%2095451" 
-   target="_blank" 
-   class="whatsapp-btn">
-  <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" 
-       alt="WhatsApp" 
-       style="width:36px;height:36px;">
-</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="card budget riviera">
-    <div class="carousel">
-      <img src="https://photos.zillowstatic.com/fp/f7ebad356912cfb05b936abaa21ab136-cc_ft_768.webp" alt="5369 Monterey Pl" class="active">
-      <img src="https://photos.zillowstatic.com/fp/8fd2d39e316ce971825050714ca85d01-cc_ft_384.webp" alt="5369 Monterey Pl">
-            <img src="https://photos.zillowstatic.com/fp/0b511bb7cbb8945bfe42a8fe471af1d7-cc_ft_384.webp" alt="5369 Monterey Pl">
-      <img src="https://photos.zillowstatic.com/fp/512780cd87f0987dbcfe172327eaf227-cc_ft_384.webp" alt="5369 Monterey Pl">
-      <div class="dots"></div>
-    </div>
-    <div class="card-content">
-      <h3>5369 Monterey Pl, Kelseyville, CA 95451</h3>
-      <p class="price">$12,888</p>
-      <div class="tags">
-        <span class="tag">Kelseyville Riviera</span>
-        <span class="tag">Budget</span>
-                <span class="tag">0.29 Acres</span>
-                <a href="https://wa.me/17864935842?text=I%20am%20interested%20in%205369%20Monterey%20Pl%2C%20Kelseyville%2C%20CA%2095451" 
-   target="_blank" 
-   class="whatsapp-btn">
-  <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" 
-       alt="WhatsApp" 
-       style="width:36px;height:36px;">
-</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="card mid riviera">
-    <div class="carousel">
-      <img src="https://photos.zillowstatic.com/fp/9383bf6f5499a7abc20e4bc2f5976dc0-cc_ft_768.webp" alt="10858 Northslope Dr" class="active">
-      <img src="https://photos.zillowstatic.com/fp/4969479416b89dda3262ded7c4045e58-cc_ft_384.webp" alt="10858 Northslope Dr">
-            <img src="https://photos.zillowstatic.com/fp/09e1020d2bc071f06d126d64bcace543-cc_ft_384.webp" alt="10858 Northslope Dr">
-      <img src="https://photos.zillowstatic.com/fp/4ddfa3703b8a5c7d6eb834edd71cb07d-cc_ft_768.webp" alt="10858 Northslope Dr">
-      <div class="dots"></div>
-    </div>
-    <div class="card-content">
-      <h3>10858 Northslope Dr, Kelseyville, CA 95451</h3>
-      <p class="price">$22,888</p>
-      <div class="tags">
-        <span class="tag">Kelseyville Riviera</span>
-        <span class="tag">Mid-Tier</span>
-                <span class="tag">9,256 sqft</span>
-                <a href="https://wa.me/17864935842?text=I%20am%20interested%20in%2010858%20Northslope%20Dr%2C%20Kelseyville%2C%20CA%2095451" 
-   target="_blank" 
-   class="whatsapp-btn">
-  <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" 
-       alt="WhatsApp" 
-       style="width:36px;height:36px;">
-</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="card budget riviera">
-    <div class="carousel">
-      <img src="https://photos.zillowstatic.com/fp/e86a66b5bf89fa718223207b18ce28b1-cc_ft_768.webp" alt="10894 Northslope Drive" class="active">
-      <img src="https://photos.zillowstatic.com/fp/d8705b622aeaddf53467eaf788ec4f10-cc_ft_384.webp" alt="10894 Northslope Drive">
-      <div class="dots"></div>
-    </div>
-    <div class="card-content">
-      <h3>10894 Northslope Dr, Kelseyville, CA 95451</h3>
-      <p class="price">$13,888</p>
-      <div class="tags">
-        <span class="tag">Kelseyville Riviera</span>
-        <span class="tag">Budget</span>
-                <span class="tag">9,583 sqft</span>
-<a href="https://wa.me/17864935842?text=I%20am%20interested%20in%2010894%20Northslope%20Dr%2C%20Kelseyville%2C%20CA%2095451" 
-   target="_blank" 
-   class="whatsapp-btn">
-  <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" 
-       alt="WhatsApp" 
-       style="width:36px;height:36px;">
-</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="card budget riviera">
-    <div class="carousel">
-      <img src="https://photos.zillowstatic.com/fp/c844e34ef25b0eb87c226c63ea289b5e-cc_ft_768.webp" alt="10898 Northslope Drive" class="active">
-      <img src="https://photos.zillowstatic.com/fp/88a9d908af58ea4fb73409c2eece3546-cc_ft_384.webp" alt="10898 Northslope Drive">
-      <img src="https://photos.zillowstatic.com/fp/79c5f86206f38a519420741751618daf-cc_ft_384.webp" alt="10898 Northslope Drive">
-      <img src="https://photos.zillowstatic.com/fp/4cfd87abc4aa1c5591a96e37a2b249de-cc_ft_384.webp" alt="10898 Northslope Drive">
-      <img src="https://photos.zillowstatic.com/fp/37de318c96d15f1ed1778140bdd50f86-cc_ft_384.webp" alt="10898 Northslope Drive">
-      <div class="dots"></div>
-    </div>
-    <div class="card-content">
-      <h3>10898 Northslope Dr, Kelseyville, CA 95451</h3>
-      <p class="price">$12,888</p>
-      <div class="tags">
-        <span class="tag">Kelseyville Riviera</span>
-        <span class="tag">Budget</span>
-                <span class="tag">9,178 sqft</span>
-        <a href="https://wa.me/17864935842?text=I%20am%20interested%20in%2010898%20Northslope%20Dr%2C%20Kelseyville%2C%20CA%2095451" 
-   target="_blank" 
-   class="whatsapp-btn">
-  <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" 
-       alt="WhatsApp" 
-       style="width:36px;height:36px;">
-      </a>
-      </div>
-    </div>
-  </div>
-
-  <div class="card mid riviera">
-    <div class="carousel">
-      <img src="https://photos.zillowstatic.com/fp/c844e34ef25b0eb87c226c63ea289b5e-cc_ft_768.webp" alt="9960 Point Lakeview Road" class="active">
-      <img src="https://photos.zillowstatic.com/fp/88a9d908af58ea4fb73409c2eece3546-cc_ft_384.webp" alt="9960 Point Lakeview Road">
-            <img src="https://photos.zillowstatic.com/fp/79c5f86206f38a519420741751618daf-cc_ft_384.webp" alt="9960 Point Lakeview Road">
-      <img src="https://photos.zillowstatic.com/fp/37de318c96d15f1ed1778140bdd50f86-cc_ft_384.webp" alt="9960 Point Lakeview Road">      <div class="dots"></div>
-    </div>
-    <div class="card-content">
-      <h3>9960 Point Lakeview Rd, Kelseyville, CA 95451</h3>
-      <p class="price">$16,888</p>
-      <div class="tags">
-        <span class="tag">Kelseyville Riviera</span>
-        <span class="tag">Mid-Tier</span>
-                <span class="tag">9,178 sqft</span>
-                <a href="https://wa.me/17864935842?text=I%20am%20interested%20in%2010898%20Northslope%20Dr%2C%20Kelseyville%2C%20CA%2095451" 
-   target="_blank" 
-   class="whatsapp-btn">
-  <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" 
-       alt="WhatsApp" 
-       style="width:36px;height:36px;">
-</a>
-      </div>
-    </div>
-  </div>
-
-
-
-  <div class="card budget riviera">
-    <div class="carousel">
-      <img src="https://photos.zillowstatic.com/fp/9dc441eac373f3589fa25973054d5524-cc_ft_768.webp" alt="9815 Sequoia Road/Klamath Rd" class="active">
-      <img src="https://photos.zillowstatic.com/fp/4fdc6cf34699ae79ac0467884081a191-cc_ft_384.webp" alt="9815 Sequoia Road/Klamath Rd">
-            <img src="https://photos.zillowstatic.com/fp/165551e044687fbc9d7bf2a8c6545e6d-cc_ft_384.webp" alt="9815 Sequoia Road/Klamath Rd">
-      <img src="https://photos.zillowstatic.com/fp/4797042b51339eb24f41c13777026d53-cc_ft_384.webp" alt="9815 Sequoia Road/Klamath Rd">
-      <img src="https://photos.zillowstatic.com/fp/4043fe92b7a17d6c46de04e1b41f403a-cc_ft_384.webp" alt="9815 Sequoia Road/Klamath Rd">
-      <div class="dots"></div>
-    </div>
-    <div class="card-content">
-      <h3>9815 Sequoia Rd, Kelseyville, CA 95451</h3>
-      <p class="price">$15,888</p>
-      <div class="tags">
-        <span class="tag">Kelseyville Riviera</span>
-        <span class="tag">Budget</span>
-                <span class="tag">6,969 sqft</span>
-                <a href="https://wa.me/17864935842?text=I%20am%20interested%20in%209815%20Sequoia%20Rd%2C%20Kelseyville%2C%20CA%2095451" 
-   target="_blank" 
-   class="whatsapp-btn">
-  <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" 
-       alt="WhatsApp" 
-       style="width:36px;height:36px;">
-</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="card premium riviera">
-    <div class="carousel">
-      <img src="https://photos.zillowstatic.com/fp/964f4db6f4ae7501b25c2d5d6f00db83-cc_ft_768.webp" alt="8870 Serrano Way" class="active">
-      <img src="https://photos.zillowstatic.com/fp/4866e4540d1309a3964aa57311937419-cc_ft_384.webp" alt="8870 Serrano Way">
-            <img src="images/42-2.jpg" alt="8870 Serrano Way">
-      <img src="https://photos.zillowstatic.com/fp/746edc1611c24f1c062394390a32c2a0-cc_ft_384.webp" alt="8870 Serrano Way">
-      <div class="dots"></div>
-    </div>
-    <div class="card-content">
-      <h3>8870 Serrano Way, Kelseyville, CA 95451</h3>
-      <p class="price">$29,888</p>
-      <div class="tags">
-        <span class="tag">Kelseyville Riviera</span>
-        <span class="tag">Premium</span>
-        <span class="tag">7,405 sqft</span>
-        <a href="https://wa.me/17864935842?text=I%20am%20interested%20in%208870%20Serrano%20Way%2C%20Kelseyville%2C%20CA%2095451" 
-   target="_blank" 
-   class="whatsapp-btn">
-  <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" 
-       alt="WhatsApp" 
-       style="width:36px;height:36px;">
-</a>                                              
-      </div>
-    </div>
-  </div>
-
-  <div class="card premium riviera">
-    <div class="carousel">
-      <img src="https://photos.zillowstatic.com/fp/e6e55f378963b752919ca847a3cb49a1-cc_ft_768.webp" alt="10860 Skyview Dr/Terrace Way" class="active">
-      <img src="https://photos.zillowstatic.com/fp/236ed05bbca51ae0a2212059c104df77-cc_ft_384.webp" alt="10860 Skyview Dr/Terrace Way">
-            <img src="https://photos.zillowstatic.com/fp/72a9470859680ada9f9f9274d42ed8be-cc_ft_384.webp" alt="10860 Skyview Dr/Terrace Way">
-      <img src="https://photos.zillowstatic.com/fp/e4cde0b7f44e2aca4524b458babfb3d8-cc_ft_384.webp" alt="10860 Skyview Dr/Terrace Way">
-      <img src="https://photos.zillowstatic.com/fp/e4f3790cd942c4dddcc47e197c660087-cc_ft_768.webp" alt="10860 Skyview Dr/Terrace Way">
-      <div class="dots"></div>
-    </div>
-    <div class="card-content">
-      <h3>10860 Skyview Dr, Kelseyville, CA 95451</h3>
-      <p class="price">$29,888</p>
-      <div class="tags">
-        <span class="tag">Kelseyville Riviera</span>
-        <span class="tag">Premium</span>
-                <span class="tag">0.31 Acres</span>
-                <a href="https://wa.me/17864935842?text=I%20am%20interested%20in%2010860%20Skyview%20Dr%2C%20Kelseyville%2C%20CA%2095451" 
-   target="_blank" 
-   class="whatsapp-btn">
-  <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" 
-       alt="WhatsApp" 
-       style="width:36px;height:36px;">
-</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="card budget riviera">
-    <div class="carousel">
-      <img src="https://photos.zillowstatic.com/fp/75882114ec2788514a6a286e5dba8f15-cc_ft_768.webp" alt="10691 Sunset Ridge Dr" class="active">
-      <img src="https://photos.zillowstatic.com/fp/9f9884a6a027517c92f3093b96e65c85-cc_ft_384.webp" alt="10691 Sunset Ridge Dr">
-            <img src="images/44-2.jpg" alt="10691 Sunset Ridge Dr">
-      <img src="https://photos.zillowstatic.com/fp/0f5f09511d782c51dd6c5bb0159833fd-cc_ft_384.webp" alt="10691 Sunset Ridge Dr">
-      <div class="dots"></div>
-    </div>
-    <div class="card-content">
-      <h3>10691 Sunset Ridge Dr, Kelseyville, CA 95451</h3>
-      <p class="price">$13,888</p>
-      <div class="tags">
-        <span class="tag">Kelseyville Riviera</span>
-        <span class="tag">Budget</span>
-                <span class="tag">0.28 Acres</span>
-                <a href="https://wa.me/17864935842?text=I%20am%20interested%20in%2010691%20Sunset%20Ridge%20Dr%2C%20Kelseyville%2C%20CA%2095451" 
-   target="_blank" 
-   class="whatsapp-btn">
-  <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" 
-       alt="WhatsApp" 
-       style="width:36px;height:36px;">
-</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="card budget riviera">
-    <div class="carousel">
-      <img src="https://photos.zillowstatic.com/fp/c426f8088a5a1fdbe237925278671560-cc_ft_768.webp" alt="9719 Tenaya Way" class="active">
-      <img src="https://photos.zillowstatic.com/fp/a0ea44dab1118cc6a150ff13935644fc-cc_ft_384.webp" alt="9719 Tenaya Way">
-            <img src="https://photos.zillowstatic.com/fp/e53723c721d1d48b161f7311bdd940ee-cc_ft_384.webp" alt="9719 Tenaya Way">
-      <img src="https://photos.zillowstatic.com/fp/4a5776ccd8ddff98edeae6b20ebc8e67-cc_ft_384.webp" alt="9719 Tenaya Way">
-      <img src="https://photos.zillowstatic.com/fp/3becf2364d8818e051d7a50e77e84ce3-cc_ft_384.webp" alt="9719 Tenaya Way">
-      <div class="dots"></div>
-    </div>
-    <div class="card-content">
-      <h3>9719 Tenaya Way, Kelseyville, CA 95451</h3>
-      <p class="price">$13,888</p>
-      <div class="tags">
-        <span class="tag">Kelseyville Riviera</span>
-        <span class="tag">Budget</span>
-                <span class="tag">6,534 sqft</span>
-                <a href="https://wa.me/17864935842?text=I%20am%20interested%20in%209719%20Tenaya%20Way%2C%20Kelseyville%2C%20CA%2095451" 
-   target="_blank" 
-   class="whatsapp-btn">
-  <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" 
-       alt="WhatsApp" 
-       style="width:36px;height:36px;">
-</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="card mid riviera">
-    <div class="carousel">
-      <img src="https://photos.zillowstatic.com/fp/13e0237b272afb9c97342ea174eb067b-cc_ft_768.webp" alt="5248 Tenino Way" class="active">
-      <img src="https://photos.zillowstatic.com/fp/46e42dc57cd74f0a3d8b1f505de99637-cc_ft_384.webp" alt="5248 Tenino Way">
-            <img src="https://photos.zillowstatic.com/fp/2e6cfc8aab3b29a897846da41dd6a791-cc_ft_384.webp" alt="5248 Tenino Way">
-      <img src="https://photos.zillowstatic.com/fp/b25b6c43747fa53eb9b8438e0a6d388d-cc_ft_768.webp" alt="5248 Tenino Way">
-      <img src="https://photos.zillowstatic.com/fp/393edab59f7aea03dc794a5613adbf49-cc_ft_384.webp" alt="5248 Tenino Way">
-      <div class="dots"></div>
-    </div>
-    <div class="card-content">
-      <h3>5248 Tenino Way, Kelseyville, CA 95451</h3>
-      <p class="price">$23,888</p>
-      <div class="tags">
-        <span class="tag">Kelseyville Riviera</span>
-        <span class="tag">Mid-Tier</span>
-                <span class="tag">8,703 sqft</span>
-      </div>
-    </div>
-  </div>
-
-  <div class="card budget riviera">
-    <div class="carousel">
-      <img src="https://photos.zillowstatic.com/fp/fc49fc740d49e7b080f6a54307516b55-cc_ft_768.webp" alt="5299 Tenino Wy/9500 Chippewa" class="active">
-      <img src="https://photos.zillowstatic.com/fp/6ebcd006886ee90fafb5f99a606a3422-cc_ft_384.webp" alt="5299 Tenino Wy/9500 Chippewa">
-            <img src="https://photos.zillowstatic.com/fp/6ab96bdf8958ecded8226b6bd51df1e6-cc_ft_384.webp" alt="5299 Tenino Wy/9500 Chippewa">
-      <img src="https://photos.zillowstatic.com/fp/fa0d6ebc6ae6388846911cd11859111b-cc_ft_384.webp" alt="5299 Tenino Wy/9500 Chippewa">
-      <img src="https://photos.zillowstatic.com/fp/cc81b7a51cd5f042b2e4349dceb8be93-cc_ft_384.webp" alt="5299 Tenino Wy/9500 Chippewa">
-      <div class="dots"></div>
-    </div>
-    <div class="card-content">
-      <h3>5299 Tenino Way, Kelseyville, CA 95451</h3>
-      <p class="price">$8,888</p>
-      <div class="tags">
-        <span class="tag">Kelseyville Riviera</span>
-        <span class="tag">Budget</span>
-                <span class="tag">0.27 Acres</span>
-                <a href="https://wa.me/17864935842?text=I%20am%20interested%20in%205299%20Tenino%20Way%2C%20Kelseyville%2C%20CA%2095451" 
-   target="_blank" 
-   class="whatsapp-btn">
-  <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" 
-       alt="WhatsApp" 
-       style="width:36px;height:36px;">
-</a>
-      </div>
-    </div>
-  </div>
-
-
-  <div class="card mid heights">
-    <div class="carousel">
-      <img src="https://photos.zillowstatic.com/fp/6d9791aed01a07ab6c08c5ea249b4c2c-cc_ft_768.webp" alt="6895 Echo Dr" class="active">
-      <img src="https://photos.zillowstatic.com/fp/4b24c945707bf871081482e76d84ef46-cc_ft_384.webp" alt="6895 Echo Dr">
-            <img src="https://photos.zillowstatic.com/fp/c528cb522054d0446bd26d8247ba3096-cc_ft_384.webp" alt="6895 Echo Dr">
-      <img src="https://photos.zillowstatic.com/fp/17c3f255ebfcd8f950ce23ca6735e591-cc_ft_384.webp" alt="6895 Echo Dr">
-      <img src="https://photos.zillowstatic.com/fp/ce746859e0de615a0f6f78dac156fe44-cc_ft_768.webp" alt="6895 Echo Dr">
-      <div class="dots"></div>
-    </div>
-    <div class="card-content">
-      <h3>6895 Echo Dr, Kelseyville, CA 95451</h3>
-      <p class="price">$18,888</p>
-      <div class="tags">
-        <span class="tag">Riviera Heights</span>
-        <span class="tag">Mid-Tier</span>
-                <span class="tag">0.3 Acres</span>
-                <a href="https://wa.me/17864935842?text=I%20am%20interested%20in%206895%20Echo%20Dr%2C%20Kelseyville%2C%20CA%2095451" 
-   target="_blank" 
-   class="whatsapp-btn">
-  <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" 
-       alt="WhatsApp" 
-       style="width:36px;height:36px;">
-</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="card mid heights">
-    <div class="carousel">
-      <img src="https://photos.zillowstatic.com/fp/2c535d11d40b10be856987a276b802c2-cc_ft_768.webp" alt="3076 Riviera Heights Drive" class="active">
-      <img src="https://photos.zillowstatic.com/fp/57848cabd2baad7022b597b5c3ccd8db-cc_ft_384.webp" alt="3076 Riviera Heights Drive">
-            <img src="https://photos.zillowstatic.com/fp/e1220552f7594f44158e2ac27e3d2ebb-cc_ft_768.webp" alt="3076 Riviera Heights Drive">
-      <img src="https://photos.zillowstatic.com/fp/22a2a139909a1b02c09cf1a3c5a9a74f-cc_ft_384.webp" alt="3076 Riviera Heights Drive">
-      <img src="https://photos.zillowstatic.com/fp/2c83a4e43b265f7257bde9375fa957da-cc_ft_384.webp" alt="3076 Riviera Heights Drive">
-      <div class="dots"></div>
-    </div>
-    <div class="card-content">
-      <h3>3076 Riviera Heights Dr, Kelseyville, CA 95451</h3>
-      <p class="price">$16,888</p>
-      <div class="tags">
-        <span class="tag">Riviera Heights</span>
-        <span class="tag">Mid-Tier</span>
-                <span class="tag">7,405 sqft</span>
-                <a href="https://wa.me/17864935842?text=I%20am%20interested%20in%203076%20Riviera%20Heights%20Dr%2C%20Kelseyville%2C%20CA%2095451" 
-   target="_blank" 
-   class="whatsapp-btn">
-  <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" 
-       alt="WhatsApp" 
-       style="width:36px;height:36px;">
-</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="card mid heights">
-    <div class="carousel">
-      <img src="https://photos.zillowstatic.com/fp/ba443b67fe920334bbca25a7fde69abc-cc_ft_384.webp" alt="3080 Riviera Heights Drive" class="active">
-      <img src="https://photos.zillowstatic.com/fp/d64b56f4727dbba6b187ab4cb32ae282-cc_ft_768.webp" alt="3080 Riviera Heights Drive">
-            <img src="https://photos.zillowstatic.com/fp/6809024d812cebb00985642db62cfc6c-cc_ft_384.webp" alt="3080 Riviera Heights Drive">
-      <img src="https://photos.zillowstatic.com/fp/ba443b67fe920334bbca25a7fde69abc-cc_ft_384.webp" alt="3080 Riviera Heights Drive">
-      <img src="https://photos.zillowstatic.com/fp/a8ad6680191a4ab898dcd64bf218ce3b-cc_ft_384.webp" alt="3080 Riviera Heights Drive">
-      <div class="dots"></div>
-    </div>
-    <div class="card-content">
-      <h3>3080 Riviera Heights Dr, Kelseyville, CA 95451</h3>
-      <p class="price">$16,888</p>
-      <div class="tags">
-        <span class="tag">Riviera Heights</span>
-        <span class="tag">Mid-Tier</span>
-                <span class="tag">7,405 sqft</span>
-                <a href="https://wa.me/17864935842?text=I%20am%20interested%20in%203080%20Riviera%20Heights%20Dr%2C%20Kelseyville%2C%20CA%2095451" 
-   target="_blank" 
-   class="whatsapp-btn">
-  <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" 
-       alt="WhatsApp" 
-       style="width:36px;height:36px;">
-</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="card mid heights">
-    <div class="carousel">
-      <img src="https://photos.zillowstatic.com/fp/cf053f5d8aa41beea2f2bf70c9a8dfd0-cc_ft_768.webp" alt="3091 Riviera Heights Drive" class="active">
-      <img src="https://photos.zillowstatic.com/fp/0da52dddbc18e68dfa93fa2fc4217113-cc_ft_384.webp" alt="3091 Riviera Heights Drive">
-            <img src="https://photos.zillowstatic.com/fp/127e7d3dadaaa1bcfe5697255ba2790d-cc_ft_384.webp" alt="3091 Riviera Heights Drive">
-      <img src="https://photos.zillowstatic.com/fp/6f1d962315517651aa8e31b27f5f9822-cc_ft_384.webp" alt="3091 Riviera Heights Drive">
-      <img src="https://photos.zillowstatic.com/fp/0d2f2e763bd614331e3bfe9bef1aae7c-cc_ft_384.webp" alt="3091 Riviera Heights Drive">
-      <div class="dots"></div>
-    </div>
-    <div class="card-content">
-      <h3>3091 Riviera Heights Dr, Kelseyville, CA 95451</h3>
-      <p class="price">$21,888</p>
-      <div class="tags">
-        <span class="tag">Riviera Heights</span>
-        <span class="tag">Mid-Tier</span>
-                <span class="tag">7,405 sqft</span>
-                <a href="https://wa.me/17864935842?text=I%20am%20interested%20in%203091%20Riviera%20Heights%20Dr%2C%20Kelseyville%2C%20CA%2095451" 
-   target="_blank" 
-   class="whatsapp-btn">
-  <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" 
-       alt="WhatsApp" 
-       style="width:36px;height:36px;">
-</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="card mid clearlake">
-    <div class="carousel">
-      <img src="images/53-1.jpg" alt="2975 Merced Ave" class="active">
-      <img src="images/53-2.jpg" alt="2975 Merced Ave">
-      <div class="dots"></div>
-    </div>
-    <div class="card-content">
-      <h3>2975 Merced Ave</h3>
-      <p class="price">$15,888</p>
-      <div class="tags">
-        <span class="tag">Clearlake</span>
-        <span class="tag">Mid-Tier</span>
-      </div>
-    </div>
-  </div>
-
-  <div class="card mid clearlake">
-    <div class="carousel">
-      <img src="https://photos.zillowstatic.com/fp/b45cd260638c81768173c650d8b1821f-cc_ft_768.webp" alt="12991 San Joaquin Ave" class="active">
-      <img src="https://photos.zillowstatic.com/fp/421465d359b3e2cbdacfb0e7ac3be11c-cc_ft_384.webp" alt="12991 San Joaquin Ave">
-            <img src="https://photos.zillowstatic.com/fp/c56b484b4f214f4f7684dff67357c024-cc_ft_384.webp" alt="12991 San Joaquin Ave">
-      <img src="https://photos.zillowstatic.com/fp/d0ed5439d6a302f2104802aae99d5366-cc_ft_384.webp" alt="12991 San Joaquin Ave">
-      <img src="https://photos.zillowstatic.com/fp/16e13004719807af7b59257c4b5223fe-cc_ft_768.webp" alt="12991 San Joaquin Ave">
-      <div class="dots"></div>
-    </div>
-    <div class="card-content">
-      <h3>12991 San Joaquin Ave, Clearlake, CA 95422</h3>
-      <p class="price">$24,500</p>
-      <div class="tags">
-        <span class="tag">Clearlake</span>
-        <span class="tag">Mid-Tier</span>
-                <span class="tag">6,534 sqft</span>
-                <a href="https://wa.me/17864935842?text=I%20am%20interested%20in%2012991%20San%20Joaquin%20Ave%2C%20Clearlake%2C%20CA%2095422" 
-   target="_blank" 
-   class="whatsapp-btn">
-  <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" 
-       alt="WhatsApp" 
-       style="width:36px;height:36px;">
-</a>
-      </div>
-    </div>
-  </div>
-
-</div>
-<!-- Contact CTA Section -->
-<section style="background: linear-gradient(135deg, #1e3a8a, #2563eb); 
-                color: #fff; 
-                text-align: center; 
-                padding: 50px 20px; 
-                border-radius: 12px; 
-                max-width: 900px; 
-                margin: 40px auto;">
-  <h2 style="font-size: 1.8rem; margin-bottom: 10px; font-weight: 700;">
-    Interested in 1 lot, 10 lots, or the entire portfolio?
-  </h2>
-  <p style="margin-bottom: 25px; font-size: 1rem; opacity: 0.9;">
-    Let's talk about bulk pricing and investment opportunities.
-  </p>
-  <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
-    <!-- WhatsApp Button -->
-    <a href="https://api.whatsapp.com/send?phone=17864935842&text=Hi%20I%27m%20interested%20in%20your%20lots" 
-       target="_blank" 
-       style="background: #25D366; 
-              color: #fff; 
-              padding: 12px 24px; 
-              border-radius: 50px; 
-              text-decoration: none; 
-              font-weight: 600; 
-              display: flex; 
-              align-items: center; 
-              gap: 8px;">
-      <span>💬</span> WhatsApp Us
-    </a>
-
-    <!-- Email Button -->
-    <a href="mailto:m.ahmadreseller@gmail.com?subject=Inquiry%20about%20Lots" 
-       style="background: #fff; 
-              color: #1e3a8a; 
-              padding: 12px 24px; 
-              border-radius: 50px; 
-              text-decoration: none; 
-              font-weight: 600; 
-              display: flex; 
-              align-items: center; 
-              gap: 8px;">
-      <span>✉️</span> Send Email
-    </a>
-  </div>
-</section>
-
-<footer>© South Shore Lake County Lots</footer>
-<script>
-  // Carousel
-  document.querySelectorAll('.carousel').forEach(carousel => {
-    const imgs = carousel.querySelectorAll('img');
-    const dotsWrap = carousel.querySelector('.dots');
-    let idx = 0;
-    imgs.forEach((_, i) => {
-      const d = document.createElement('span');
-      d.className = 'dot' + (i===0 ? ' active' : '');
-      d.addEventListener('click', () => show(i));
-      dotsWrap.appendChild(d);
-    });
-    const dots = dotsWrap.querySelectorAll('.dot');
-    function show(i){
-      imgs[idx].classList.remove('active'); dots[idx].classList.remove('active');
-      idx = i;
-      imgs[idx].classList.add('active'); dots[idx].classList.add('active');
+    // ---------------------------
+    // Helper functions
+    // ---------------------------
+    function escapeHtml(s){
+      if(s === undefined || s === null) return '';
+      return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
     }
-    setInterval(()=> show((idx+1)%imgs.length), 4000);
-  });
+    function makeSeedFromAddress(address){
+      if(!address) return 'property';
+      return address.replace(/[^a-zA-Z0-9\s]/g,'').trim().replace(/\s+/g,'+').slice(0,60);
+    }
+    function placeholderURLs(address, n=5){
+      const seed = makeSeedFromAddress(address);
+      const arr=[];
+      for(let i=1;i<=n;i++){
+        arr.push(`https://via.placeholder.com/1200x800?text=${encodeURIComponent(seed+'+'+i)}`);
+      }
+      return arr;
+    }
 
-  // Filters
-  const btns = document.querySelectorAll('.filter-btn');
-  const cards = document.querySelectorAll('.card');
-  btns.forEach(btn => btn.addEventListener('click', () => {
-    btns.forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    const f = btn.getAttribute('data-filter');
-    cards.forEach(c => {
-      c.style.display = (f==='all' || c.classList.contains(f)) ? 'block' : 'none';
+    // If providedImages object is incomplete because the chat trimmed it for length,
+    // allow the script to keep working: we'll merge providedImages with what's available,
+    // but for any missing address we fill placeholders.
+    // (The providedImages const above should be filled by the full mapping you sent. If anything got trimmed you can paste more pairs and this code will use them.)
+
+    // Ensure each property has an images array: use providedImages[address] if exists, otherwise placeholders.
+    properties.forEach(p => {
+      const pres = providedImages[p.address];
+      if(Array.isArray(pres) && pres.length){
+        // copy provided images, then ensure at least 5 images by adding placeholders if needed
+        const imgs = pres.slice(); // use all provided images (not limited)
+        while(imgs.length < 5) imgs.push(...placeholderURLs(p.address, 1));
+        p.images = imgs;
+      } else {
+        p.images = placeholderURLs(p.address, 5);
+      }
     });
-  }));
-</script>
+
+    // ---------------------------
+    // Rendering
+    // ---------------------------
+    const budgetGrid = document.getElementById('budgetGrid');
+    const otherGrid = document.getElementById('otherGrid');
+
+    function createCarousel(imgUrls, address){
+      const container = document.createElement('div');
+      container.className = 'carousel';
+      container.setAttribute('role','region');
+      container.setAttribute('aria-label', 'Photos of ' + (address || 'property'));
+      container.tabIndex = 0;
+
+      imgUrls.forEach((src, i) => {
+        const im = document.createElement('img');
+        im.src = src;
+        im.alt = `Photo ${i+1} of ${address || 'property'}`;
+        if(i === 0) im.classList.add('active');
+        container.appendChild(im);
+      });
+
+      if(imgUrls.length > 1){
+        const prev = document.createElement('button');
+        prev.className = 'nav prev';
+        prev.type = 'button';
+        prev.innerHTML = '‹';
+        prev.setAttribute('aria-label','Previous photo');
+
+        const next = document.createElement('button');
+        next.className = 'nav next';
+        next.type = 'button';
+        next.innerHTML = '›';
+        next.setAttribute('aria-label','Next photo');
+
+        container.appendChild(prev);
+        container.appendChild(next);
+
+        const imgs = container.querySelectorAll('img');
+        let current = 0;
+        function show(n){
+          imgs[current].classList.remove('active');
+          current = (n + imgs.length) % imgs.length;
+          imgs[current].classList.add('active');
+        }
+        prev.addEventListener('click', (e)=>{ e.stopPropagation(); show(current-1); });
+        next.addEventListener('click', (e)=>{ e.stopPropagation(); show(current+1); });
+
+        // keyboard support
+        container.addEventListener('keydown', (e)=>{
+          if(e.key === 'ArrowLeft') { show(current-1); e.preventDefault(); }
+          if(e.key === 'ArrowRight') { show(current+1); e.preventDefault(); }
+        });
+      }
+
+      return container;
+    }
+
+    function renderList(list){
+      budgetGrid.innerHTML = '';
+      otherGrid.innerHTML = '';
+
+      list.forEach((p, idx) => {
+        const el = document.createElement('article');
+        el.className = 'card';
+
+        const imgs = p.images && p.images.length ? p.images : placeholderURLs(p.address,5);
+        const carousel = createCarousel(imgs, p.address);
+
+        const priceBadge = document.createElement('div');
+        priceBadge.className = 'price-badge';
+        priceBadge.innerText = p.price ? p.price : 'Price N/A';
+        carousel.appendChild(priceBadge);
+
+        const content = document.createElement('div');
+        content.className = 'card-content';
+        content.innerHTML = `
+          <h3>${escapeHtml(p.address)}</h3>
+          <div class="meta small"><strong>Source:</strong> <span style="color:var(--muted)">${escapeHtml(p.source || '')}</span></div>
+          <div class="facts"><strong>Lot size:</strong> ${escapeHtml(p.lotSize || 'n/a')}<br>
+            <strong>HOA:</strong> ${escapeHtml(p.hoa || 'n/a')} • <strong>Taxes:</strong> ${escapeHtml(p.taxes || 'n/a')}<br>
+            <strong>APN:</strong> ${escapeHtml(p.apn || 'n/a')}
+          </div>
+          <div class="notes">${escapeHtml(p.notes || '')}</div>
+        `;
+
+        const actions = document.createElement('div');
+        actions.className = 'actions';
+
+        const waNumber = '17864935842';
+        const waText = encodeURIComponent(`Hi — I'm interested in ${p.address}. Could you share more details?`);
+        const waHref = `https://wa.me/${waNumber}?text=${waText}`;
+        const aWa = document.createElement('a');
+        aWa.href = waHref;
+        aWa.target = '_blank';
+        aWa.rel = 'noopener noreferrer';
+        aWa.title = 'Message on WhatsApp';
+        aWa.innerHTML = `<svg class="icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.004 2C6.477 2 2 6.477 2 12c0 2.111.624 4.067 1.702 5.72L2 22l4.463-1.145C8.003 21.206 9.976 22 12.004 22 17.527 22 22 17.523 22 12 22 6.477 17.527 2 12.004 2z" fill="white" opacity="0.06"/><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.472-.148-.672.149-.199.297-.769.967-.943 1.166-.173.199-.347.224-.644.075-.297-.149-1.255-.462-2.39-1.475-.884-.788-1.48-1.761-1.653-2.058-.173-.297-.018-.458.13-.606.134-.133.298-.347.447-.52.149-.173.199-.298.298-.497.099-.199 0-.373-.05-.522-.05-.149-.672-1.612-.921-2.205-.242-.58-.487-.502-.672-.512l-.573-.01c-.199 0-.522.074-.795.373-.273.298-1.042 1.016-1.042 2.479 0 1.462 1.066 2.875 1.214 3.074.149.199 2.095 3.2 5.076 4.487 1.249.538 2.222.859 2.983 1.099 1.255.362 2.396.311 3.299.189.999-.13 1.758-.718 2.008-1.41.249-.692.249-1.287.174-1.41-.074-.124-.272-.199-.569-.348z" fill="white"/></svg> WhatsApp`;
+        actions.appendChild(aWa);
+
+        const mailto = `mailto:m.ahmadreseller@gmail.com?subject=${encodeURIComponent('Inquiry: ' + p.address)}&body=${encodeURIComponent('Hello,%0D%0A%0D%0AI am interested in this property: ' + p.address + '%0D%0A%0D%0APlease send details about availability and next steps.%0D%0A%0D%0AThank you.')}`;
+        const aMail = document.createElement('a');
+        aMail.href = mailto;
+        aMail.className = 'secondary';
+        aMail.title = 'Send email';
+        aMail.innerHTML = `<svg class="icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="4" width="20" height="16" rx="2" fill="currentColor" /></svg> Email`;
+        aMail.setAttribute('aria-label','Email seller about ' + p.address);
+        aMail.rel = 'noopener noreferrer';
+        actions.appendChild(aMail);
+
+        const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.address)}`;
+        const aMap = document.createElement('a');
+        aMap.href = mapHref;
+        aMap.target = '_blank';
+        aMap.rel = 'noopener noreferrer';
+        aMap.title = 'Open in Google Maps';
+        aMap.innerHTML = `<svg class="icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C8.1 2 5 5.2 5 9c0 5.3 7 13 7 13s7-7.7 7-13c0-3.8-3.1-7-7-7z" fill="white" opacity="0.06"/><path d="M12 11.5A2.5 2.5 0 1112 6.5a2.5 2.5 0 010 5z" fill="white"/></svg> Map View`;
+        actions.appendChild(aMap);
+
+        el.appendChild(carousel);
+        el.appendChild(content);
+        el.appendChild(actions);
+
+        if(p.category === 'Budget') budgetGrid.appendChild(el);
+        else otherGrid.appendChild(el);
+      });
+    }
+
+    // initial render
+    renderList(properties);
+
+    // ---------------------------
+    // Filters & Search
+    // ---------------------------
+    const searchInput = document.getElementById('search');
+    const filterCategory = document.getElementById('filterCategory');
+    const filterHOA = document.getElementById('filterHOA');
+    const clearBtn = document.getElementById('clearBtn');
+
+    function applyFilters(){
+      const q = (searchInput.value || '').toLowerCase().trim();
+      const cat = filterCategory.value;
+      const hoa = filterHOA.value;
+      let filtered = properties.slice();
+      if(cat) filtered = filtered.filter(p => p.category === cat);
+      if(hoa){
+        if(hoa === '140') filtered = filtered.filter(p => (p.hoa||'').includes('140'));
+        else if(hoa === '160') filtered = filtered.filter(p => (p.hoa||'').includes('160'));
+        else if(hoa === '475+') filtered = filtered.filter(p => {
+          const num = parseInt((p.hoa||'').replace(/[^0-9]/g,'')) || 0; return num >= 475;
+        });
+      }
+      if(q){
+        filtered = filtered.filter(p => {
+          return (p.address||'').toLowerCase().includes(q) ||
+                 (p.notes||'').toLowerCase().includes(q) ||
+                 (p.apn||'').toLowerCase().includes(q) ||
+                 (p.price||'').toLowerCase().includes(q) ||
+                 (p.lotSize||'').toLowerCase().includes(q) ||
+                 (p.source||'').toLowerCase().includes(q);
+        });
+      }
+      renderList(filtered);
+    }
+
+    searchInput.addEventListener('input', applyFilters);
+    filterCategory.addEventListener('change', applyFilters);
+    filterHOA.addEventListener('change', applyFilters);
+    clearBtn.addEventListener('click', ()=> {
+      searchInput.value = '';
+      filterCategory.value = '';
+      filterHOA.value = '';
+      renderList(properties);
+      searchInput.focus();
+    });
+
+    // focus search on load
+    try { searchInput.focus(); } catch(e){}
+  </script>
 </body>
 </html>
